@@ -1,0 +1,23 @@
+# Visual Studio Code
+.vscode/
+.settings.json
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.db
+*.sqlite3
+*.log
+
+# Visual Studio
+.vs/
+.vscode/
+*.suo
+*.user
+*.sln.docstates
+bin/
+obj/
