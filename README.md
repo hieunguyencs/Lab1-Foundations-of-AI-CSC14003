@@ -2,13 +2,13 @@
 
 ## BẢN ĐỒ BÌNH THƯỜNG (7đ)
 - 5 cái 
-- Cài thuật; 
+- Cài thuật:
     + 3 thuật ko thông tin: **DFS**, **BFS**, **UCS**
     + 2 thuật có thông tin (tự định nghĩa ít nhất 2 hàm heuristic, mỗi thuật chạy 2 hàm này): **Greedy Best First Search**, **A***
 
 
 ## BẢN ĐỒ ĐIỂM THƯỞNG (2đ)
-- Các điểm thưởng khi đi qua được giảm chi phí, gía trị < 0, có thể khác nhau 
+- Các điểm thưởng khi đi qua được giảm chi phí, giá trị < 0, có thể khác nhau 
 - 3 cái (2, 5, 10 điểm thưởng) 
 - Ko bắt buộc đi qua hết điểm thưởng
 - Đề xuất 1 thuật để tối ưu chi phí (nếu ko tối ưu được thì cài heuristic để tham lam).
@@ -19,14 +19,13 @@
 - Đề xuất 1 thuật để tối ưu chi phí (nếu ko tối ưu được thì cài heuristic để tham lam).
 
 ## BẢN ĐỒ DỊCH CHUYỂN TỨC THỜI (1đ cộng)
-
- Thêm 1 vài điểm dịch chuyển ( Điểm (i,j) có thêm khả năng dịch chuyển tới (i',j') )
+- Thêm 1 vài điểm dịch chuyển ( Điểm (i,j) có thêm khả năng dịch chuyển tới (i',j') )
 - 3 cái
 - Đề xuất 1 thuật để tối ưu chi phí (nếu ko tối ưu được thì cài heuristic để tham lam).
 
 ## Lưu ý 
 - Mỗi loại bản đồ: ít nhất 1 bản đồ dài hơn 35 và 1 bản đồ rộng hơn 15
-- Simulator quá trình tìm đường đi thay vì chỉ vẽ ra đường đi (vd: https://www.youtube.com/watch?v=Gk4Dga5m1QQ): +0.5đ
+- Simulate quá trình tìm đường đi thay vì chỉ vẽ ra đường đi (vd: https://www.youtube.com/watch?v=Gk4Dga5m1QQ): +0.5đ
 
 
 # Báo cáo
