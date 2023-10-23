@@ -9,6 +9,7 @@ pygame.display.set_caption("BFS")
 FPS = 60
 delay = 30
 
+
 # DEFINE COLOR
 WHITE = (255, 255, 255)
 
@@ -17,6 +18,8 @@ WHITE = (255, 255, 255)
 CELL_WIDTH, CELL_HEIGHT = 50, 50
 dx = [1, -1, 0, 0]
 dy = [0, 0, 1, -1]
+ROW, COL = 0, 0
+X_OFFSET, Y_OFFSET = 0, 0
 
 
 # INCLUDE IMAGE
@@ -35,6 +38,18 @@ WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
 VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
 PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
+def draw_cell_no_delay(x, y, IMG): 
+    drawX = X_OFFSET + y * CELL_WIDTH
+    drawY = Y_OFFSET + x * CELL_HEIGHT
+    WIN.blit(IMG, (drawX, drawY))
+
+def draw_cell(x, y, IMG): 
+    drawX = X_OFFSET + y * CELL_WIDTH
+    drawY = Y_OFFSET + x * CELL_HEIGHT
+    WIN.blit(IMG, (drawX, drawY))
+    pygame.display.update()
+    pygame.time.delay(delay)
+
 def load_maze(maze_path):
     maze_data = []
     with open(maze_path, 'r') as file:
@@ -49,27 +64,17 @@ def load_maze(maze_path):
     return maze_data, rows, cols
 
 def draw_maze(maze_data, rows, cols):
-    # Calculate the position to center the maze on the screen
-    x_offset = (WIDTH - cols * CELL_WIDTH) // 2
-    y_offset = (HEIGHT - rows * CELL_HEIGHT) // 2
-
     for row in range(rows):
         for col in range(cols):
             cell = maze_data[row][col]
-            x = x_offset + col * CELL_WIDTH
-            y = y_offset + row * CELL_HEIGHT
-
             if cell == 'x':
-                WIN.blit(WALL_IMG, (x, y))
+                draw_cell_no_delay(row, col, WALL_IMG)
             elif cell == 'S':
-                WIN.blit(START_IMG, (x, y))
+                draw_cell_no_delay(row, col, START_IMG)
             elif row == 0 or row == rows - 1 or col == 0 or col == cols - 1:
-                WIN.blit(END_IMG, (x, y))
+                draw_cell_no_delay(row, col, END_IMG)
 
 def bfs(grid, rows, cols): 
-    x_offset = (WIDTH - cols * CELL_WIDTH) // 2
-    y_offset = (HEIGHT - rows * CELL_HEIGHT) // 2
-
     start_x, start_y = None, None
     for i in range(rows):
         for j in range(cols):
@@ -113,34 +118,26 @@ def bfs(grid, rows, cols):
                     path.reverse()
                     return path
                 
-                drawX = x_offset + new_y * CELL_WIDTH
-                drawY = y_offset + new_x * CELL_HEIGHT
-                WIN.blit(VISITED_IMG, (drawX, drawY))
-                pygame.display.update()
-                pygame.time.delay(delay)
-
+                draw_cell(new_x, new_y, VISITED_IMG)
+ 
     return []
 
 def draw_path(grid, rows, cols):
-    x_offset = (WIDTH - cols * CELL_WIDTH) // 2
-    y_offset = (HEIGHT - rows * CELL_HEIGHT) // 2
-
     path = bfs(grid, rows, cols)
     path = path[1:-1]
 
     pygame.time.delay(1000)
     for x, y in path:
-        drawX = x_offset + y * CELL_WIDTH
-        drawY = y_offset + x * CELL_HEIGHT
-        WIN.blit(PATH_IMG, (drawX, drawY))
-        pygame.display.update()
-        pygame.time.delay(delay)
-
+        draw_cell(x, y, PATH_IMG)
 
 def main():
     maze_path = os.path.join('input', 'level_1', 'input1.txt')
     maze_data, rows, cols = load_maze(maze_path)
     
+    global X_OFFSET, Y_OFFSET
+    X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
+    Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
+
     WIN.fill(WHITE)
     draw_maze(maze_data, rows, cols)
     pygame.display.update()
@@ -154,8 +151,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-        
-
     pygame.quit()
 
 if __name__ == "__main__":
