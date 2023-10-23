@@ -1,10 +1,9 @@
 import pygame
 import os
 import sys
-from collections import deque
 
 # GAME SETUP
-WIDTH, HEIGHT = 1500, 800
+WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BFS")
 FPS = 60
@@ -13,7 +12,7 @@ delay = 30
 # DEFINE COLOR
 WHITE = (255, 255, 255)
 
-# Constants
+# CONSTANTS
 CELL_WIDTH, CELL_HEIGHT = 50, 50
 dx = [1, -1, 0, 0]
 dy = [0, 0, 1, -1]
@@ -36,6 +35,8 @@ WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
 VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
 PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
+
+# DRAW METHOD
 def draw_cell_no_delay(x, y, IMG): 
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
@@ -47,25 +48,6 @@ def draw_cell(x, y, IMG):
     WIN.blit(IMG, (drawX, drawY))
     pygame.display.update()
     pygame.time.delay(delay)
-
-def load_maze(maze_path):
-    maze_data = []
-    gift_data = []
-    with open(maze_path, 'r') as file:
-        lines = file.read().splitlines()
-        # The first line is the number of rows (ignore it)
-
-        n = int(list(lines[0])[0])
-        for i in range(1, n + 1): 
-            gift_data.append(list(map(int, lines[i].split())))
-
-        for line in lines[n + 1:]:
-            maze_data.append(list(line))
-
-        rows = len(lines) - n - 1
-        cols = len(lines[n + 1])
-
-    return maze_data, gift_data, rows, cols
 
 def draw_maze(maze_data, rows, cols):
     for row in range(rows):
@@ -80,23 +62,57 @@ def draw_maze(maze_data, rows, cols):
             elif cell == '+': 
                 draw_cell_no_delay(row, col, GIFT_IMG)
 
+# LOAD MAZE GIVEN PATH
+def load_maze(maze_path):
+    # Set caption
+    map_number = int(maze_path.split('/')[-1].replace('input', '').split('.')[0])
+    cur_caption = pygame.display.get_caption()[0]
+    new_caption = f"{cur_caption} - Map {map_number}"
+    pygame.display.set_caption(new_caption)
+
+    # Read maze
+    maze_data = []
+    gift_data = []
+    with open(maze_path, 'r') as file:
+        lines = file.read().splitlines()
+
+        n = list(map(int, lines[0].split()))[0]
+        for i in range(1, n + 1): 
+            gift_data.append(list(map(int, lines[i].split())))
+
+        for line in lines[n + 1:]:
+            maze_data.append(list(line))
+
+        rows = len(lines) - n - 1
+        cols = len(lines[n + 1])
+
+    # Set up sizes and position
+    global CELL_WIDTH, CELL_HEIGHT
+    if WIDTH / cols < HEIGHT / rows: 
+        CELL_WIDTH = CELL_HEIGHT = (WIDTH) / (cols + 2)
+    else: 
+        CELL_WIDTH = CELL_HEIGHT = (HEIGHT) / (rows + 2)
+
+    global X_OFFSET, Y_OFFSET   
+    X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
+    Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
+
+    # Draw maze
+    WIN.fill(WHITE)
+    draw_maze(maze_data, rows, cols)
+    pygame.display.update()
+    pygame.time.delay(1000)
+
+    return maze_data, gift_data, rows, cols
+
 # --- WRITE GRAPH FUNCTION HERE ---
-# Call function draw_cell(x, y, IMG) to draw IMG at cell (x, y)
+# You can call function draw_cell(x, y, IMG) to draw IMG at cell (x, y)
 
 
 # ---------------------------------
 
 def main(maze_path):
     maze_data, gift_data, rows, cols = load_maze(maze_path)
-
-    global X_OFFSET, Y_OFFSET   
-    X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
-    Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
-
-    WIN.fill(WHITE)
-    draw_maze(maze_data, rows, cols)
-    pygame.display.update()
-    pygame.time.delay(1000)
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
