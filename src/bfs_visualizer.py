@@ -1,5 +1,6 @@
 import pygame
 import os
+import sys
 from collections import deque
 
 # GAME SETUP
@@ -23,12 +24,12 @@ X_OFFSET, Y_OFFSET = 0, 0
 
 
 # INCLUDE IMAGE
-START_IMG = pygame.image.load(os.path.join('Assets', 'start.jpg'))
-END_IMG = pygame.image.load(os.path.join('Assets', 'door.jpg'))
-GIFT_IMG = pygame.image.load(os.path.join('Assets', 'gift.jpg'))
-WALL_IMG = pygame.image.load(os.path.join('Assets', 'wall.jpg'))
-VISITED_IMG = pygame.image.load(os.path.join('Assets', 'visited.jpg'))
-PATH_IMG = pygame.image.load(os.path.join('Assets', 'path.jpg'))
+START_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start.jpg'))
+END_IMG = pygame.image.load(os.path.join('..', 'Assets', 'door.jpg'))
+GIFT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'gift.jpg'))
+WALL_IMG = pygame.image.load(os.path.join('..', 'Assets', 'wall.jpg'))
+VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
+PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
 
 # SCALE IMG
 START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
@@ -52,14 +53,20 @@ def draw_cell(x, y, IMG):
 
 def load_maze(maze_path):
     maze_data = []
+    gift_data = []
     with open(maze_path, 'r') as file:
         lines = file.read().splitlines()
         # The first line is the number of rows (ignore it)
-        rows = len(lines) - 1
-        cols = len(lines[1])
 
-        for line in lines[1:]:
+        n = int(list(lines[0])[0])
+        for i in range(1, n + 1): 
+            gift_data.append(list(lines[i]))
+
+        for line in lines[n + 1:]:
             maze_data.append(list(line))
+
+        rows = len(lines) - n - 1
+        cols = len(lines[n + 1])
 
     return maze_data, rows, cols
 
@@ -130,11 +137,10 @@ def draw_path(grid, rows, cols):
     for x, y in path:
         draw_cell(x, y, PATH_IMG)
 
-def main():
-    maze_path = os.path.join('input', 'level_1', 'input1.txt')
+def main(maze_path):
     maze_data, rows, cols = load_maze(maze_path)
     
-    global X_OFFSET, Y_OFFSET
+    global X_OFFSET, Y_OFFSET   
     X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
     Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
 
@@ -142,6 +148,7 @@ def main():
     draw_maze(maze_data, rows, cols)
     pygame.display.update()
     pygame.time.delay(1000)
+
     draw_path(maze_data, rows, cols)
 
     clock = pygame.time.Clock()
@@ -153,5 +160,9 @@ def main():
                 run = False
     pygame.quit()
 
-if __name__ == "__main__":
-    main()
+
+if len(sys.argv) != 2:
+    print("Usage: python bfs_visualizer.py <path>")
+else:
+    maze_path = sys.argv[1]
+    main(maze_path)
