@@ -10,10 +10,8 @@ pygame.display.set_caption("BFS")
 FPS = 60
 delay = 30
 
-
 # DEFINE COLOR
 WHITE = (255, 255, 255)
-
 
 # Constants
 CELL_WIDTH, CELL_HEIGHT = 50, 50
@@ -21,7 +19,6 @@ dx = [1, -1, 0, 0]
 dy = [0, 0, 1, -1]
 ROW, COL = 0, 0
 X_OFFSET, Y_OFFSET = 0, 0
-
 
 # INCLUDE IMAGE
 START_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start.jpg'))
@@ -84,7 +81,7 @@ def draw_maze(maze_data, rows, cols):
                 draw_cell_no_delay(row, col, GIFT_IMG)
 
 # --- WRITE GRAPH FUNCTION HERE ---
-
+# Call function draw_cell(x, y, IMG) to draw IMG at cell (x, y)
 
 
 # ---------------------------------
@@ -102,6 +99,7 @@ def main(maze_path):
     pygame.time.delay(1000)
 
     # --- CALL GRAPH FUNCTION HERE ---
+    # Ex: DFS(maze_data, gift_data, rows, cols)
 
 
     # --------------------------------
@@ -114,7 +112,6 @@ def main(maze_path):
             if event.type == pygame.QUIT:
                 run = False
     pygame.quit()
-
 
 if len(sys.argv) != 2:
     print("Usage: python bfs_visualizer.py <path>")
