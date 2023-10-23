@@ -28,6 +28,7 @@ WALL_IMG = pygame.image.load(os.path.join('..', 'Assets', 'wall.jpg'))
 VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
 PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
 
+
 # SCALE IMAGE
 def scale_img():
     global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG
@@ -37,7 +38,6 @@ def scale_img():
     WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
     VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
-
 
 # DRAW METHOD
 def draw_cell_no_delay(x, y, IMG): 

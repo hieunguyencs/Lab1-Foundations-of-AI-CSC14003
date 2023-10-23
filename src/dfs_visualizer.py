@@ -5,17 +5,18 @@ import sys
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("BFS")
+pygame.display.set_caption("DFS")
 FPS = 60
-delay = 30
+delay = 50
+long_delay = 1000
 
 # DEFINE COLOR
 WHITE = (255, 255, 255)
 
 # CONSTANTS
 CELL_WIDTH, CELL_HEIGHT = 50, 50
-dx = [1, -1, 0, 0]
-dy = [0, 0, 1, -1]
+dx = [-1, 0, 0, 1]
+dy = [0, 1, -1, 0]
 ROW, COL = 0, 0
 X_OFFSET, Y_OFFSET = 0, 0
 
@@ -95,11 +96,11 @@ def load_maze(maze_path):
     else: 
         CELL_WIDTH = CELL_HEIGHT = (HEIGHT) / (rows + 2)
 
+    scale_img()
+
     global X_OFFSET, Y_OFFSET   
     X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
     Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
-
-    scale_img()
 
     # Draw maze
     WIN.fill(WHITE)
@@ -112,6 +113,60 @@ def load_maze(maze_path):
 # --- WRITE GRAPH FUNCTION HERE ---
 # You can call function draw_cell(x, y, IMG) to draw IMG at cell (x, y)
 
+def DFS(a, rows, cols):
+    vis = [[False for j in range(cols)] for i in range(rows)]
+    trace = [[[-1, -1] for j in range(cols)] for i in range(rows)]
+
+    for i in range(rows):
+        for j in range(cols):
+            if a[i][j] == 'S':
+                start = [i, j]
+            if a[i][j] != 'x' and (i == 0 or i == rows - 1 or j == 0 or j == cols - 1):
+                end = [i, j]
+
+    found = False
+
+    def inGrid(x, y): 
+        return x >= 0 and x < rows and y >= 0 and y < cols
+
+    def recurse(x, y):
+        nonlocal found
+        if found:
+            return  
+        vis[x][y] = True
+        for i in range(4):
+            new_x = x + dx[i]
+            new_y = y + dy[i]
+
+            if (found): 
+                return
+
+            if inGrid(new_x, new_y) and not vis[new_x][new_y] and a[new_x][new_y] != 'x':
+                trace[new_x][new_y] = [x, y]
+                if [new_x, new_y] == end:
+                    found = True
+                    return  
+
+                draw_cell(new_x, new_y, VISITED_IMG)
+                recurse(new_x, new_y)
+
+    recurse(start[0], start[1])
+
+    # Trace path
+    X, Y = end
+    path = []
+    while True: 
+        if [X, Y] == [-1, -1]: 
+            break    
+        path.append([X, Y])
+        X, Y = trace[X][Y]
+    path.reverse()
+
+    # Draw path
+    pygame.time.delay(long_delay)
+    path = path[1:-1]
+    for u, v in path: 
+        draw_cell(u, v, PATH_IMG)
 
 # ---------------------------------
 
@@ -120,7 +175,7 @@ def main(maze_path):
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-
+    DFS(maze_data, rows, cols)
 
     # --------------------------------
 
