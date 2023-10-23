@@ -27,14 +27,16 @@ WALL_IMG = pygame.image.load(os.path.join('..', 'Assets', 'wall.jpg'))
 VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
 PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
 
-# SCALE IMG
-START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
-END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
-GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
-WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
-VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
-PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
+# SCALE IMAGE
+def scale_img():
+    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG
+    START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
 # DRAW METHOD
 def draw_cell_no_delay(x, y, IMG): 
@@ -96,6 +98,8 @@ def load_maze(maze_path):
     global X_OFFSET, Y_OFFSET   
     X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
     Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
+
+    scale_img()
 
     # Draw maze
     WIN.fill(WHITE)
