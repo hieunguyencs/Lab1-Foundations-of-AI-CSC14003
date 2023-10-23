@@ -60,7 +60,7 @@ def load_maze(maze_path):
 
         n = int(list(lines[0])[0])
         for i in range(1, n + 1): 
-            gift_data.append(list(lines[i]))
+            gift_data.append(list(map(int, lines[i].split())))
 
         for line in lines[n + 1:]:
             maze_data.append(list(line))
@@ -91,7 +91,7 @@ def draw_maze(maze_data, rows, cols):
 
 def main(maze_path):
     maze_data, gift_data, rows, cols = load_maze(maze_path)
-    
+
     global X_OFFSET, Y_OFFSET   
     X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
     Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
