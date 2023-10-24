@@ -8,6 +8,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BFS")
 FPS = 60
 delay = 30
+long_delay = 1000
 
 # DEFINE COLOR
 WHITE = (255, 255, 255)
@@ -105,7 +106,7 @@ def load_maze(maze_path):
     WIN.fill(WHITE)
     draw_maze(maze_data, rows, cols)
     pygame.display.update()
-    pygame.time.delay(1000)
+    pygame.time.delay(long_delay)
 
     return maze_data, gift_data, rows, cols
 
