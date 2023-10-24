@@ -21,3 +21,7 @@ __pycache__/
 *.sln.docstates
 bin/
 obj/
+
+# PyCharm
+.idea
+venv/
