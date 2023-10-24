@@ -6,7 +6,7 @@ import heapq
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("BFS")
+pygame.display.set_caption("UCS")
 FPS = 60
 delay = 30
 
