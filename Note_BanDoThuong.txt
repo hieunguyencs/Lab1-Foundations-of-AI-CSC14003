@@ -1,8 +1,0 @@
-- BFS, DFS giống nhau
-
-- UCS chậm hơn BFS, DFS. Không thích hợp với đồ thị không có trọng số như thế này, vì việc lấy min g() không có ý nghĩa, mà lại tốn chi phí log() cho heap. 
-
-- Heuristic 1: h1(x, y) = Khoảng cách manhattan từ (x, y) đến exit
-	+ A*: Vẫn tìm được đường đi tối ưu. Nhanh hơn trong hầu hết mọi đồ thị thông thường. TUy nhiên trong đồ thị không có đường đi thì thậm chí chậm hơn UCS, vì các đỉnh đã close vẫn có thể bị lấy ra đi lại.
-
-- Heuristic 2: h2(x, y) = Khoảng cách đường chim bay từ (x, y) đến exit
