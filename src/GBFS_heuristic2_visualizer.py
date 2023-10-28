@@ -185,6 +185,7 @@ def GBFS(grid, num_row, num_col):
                 heapq.heappush(heap, [h(next_x, next_y), [next_x, next_y]])
 
     # draw path
+    pygame.time.delay(long_delay)
     path = constructPath()
     path = path[1:-1]
     for x, y in path: 
