@@ -139,12 +139,11 @@ def aStar(grid, num_row, num_col):
     open = [[0 for i in range(num_col)] for i in range(num_row)]
     heap = [] # this is for getting min f = g + h
 
-    # heuristic: straght line
-    def h(x, y): 
-        X = abs(x - end[0]) 
+    # heuristic: manhattan distance 
+    def h(x, y):
+        X = abs(x - end[0])
         Y = abs(y - end[1])
-        return math.sqrt(X*X + Y*Y)
-        
+        return X + Y
     
     # trace path
     def constructPath(): 
