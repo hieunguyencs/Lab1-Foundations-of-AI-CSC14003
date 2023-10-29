@@ -170,8 +170,8 @@ def bfs(grid, teleport_data, rows, cols):
                     path.append((start_x, start_y))
                     path.reverse()
                     return path
-
-                draw_cell(new_x, new_y, VISITED_IMG)
+                if grid[new_x][new_y] != 'o' and grid[new_x][new_y] != 'O':
+                    draw_cell(new_x, new_y, VISITED_IMG)
 
     return []
 
