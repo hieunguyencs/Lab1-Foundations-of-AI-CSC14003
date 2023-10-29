@@ -36,11 +36,12 @@ START_IMG = pygame.image.load(os.path.join('Assets', 'start.jpg'))
 GIFT_CHECKED_IMG = pygame.image.load(os.path.join('Assets', 'gift_checked.png'))
 GIFT_IMG = pygame.image.load(os.path.join('Assets', 'gift.jpg'))
 START_CHECKED_IMG = pygame.image.load(os.path.join('Assets', 'start_checked.png'))
+BUS_STOP_CHECK_IMG = pygame.image.load(os.path.join('Assets', 'bus_stop_checked.png'))
 
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG, GIFT_CHECKED_IMG, START_CHECKED_IMG, GIFT_IMG
+    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG, GIFT_CHECKED_IMG, START_CHECKED_IMG, GIFT_IMG, BUS_STOP_CHECK_IMG
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
     WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
@@ -53,6 +54,7 @@ def scale_img():
     GIFT_CHECKED_IMG = pygame.transform.scale(GIFT_CHECKED_IMG, (CELL_WIDTH, CELL_HEIGHT))
     START_CHECKED_IMG = pygame.transform.scale(START_CHECKED_IMG, (CELL_WIDTH, CELL_HEIGHT))
     GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    BUS_STOP_CHECK_IMG = pygame.transform.scale(BUS_STOP_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
 # SCALE IMAGE
 
@@ -78,7 +80,9 @@ def draw_cell(x, y, IMG, start=None, gifts=None, stops=None, tele_in=None, tele_
                 break
     if stops != None:
         for stop in stops:
-            pass
+            if x == stop[0] and y == stop[1]:
+                IMG = BUS_STOP_CHECK_IMG
+                break
     if start!= None and x == start[0] and y == start[1]:
         IMG = START_CHECKED_IMG
 
