@@ -176,7 +176,7 @@ def main(maze_path):
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-    draw_path(maze_data, rows, cols)
+    # draw_path(maze_data, rows, cols)
 
     # --------------------------------
 

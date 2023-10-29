@@ -175,8 +175,7 @@ def bfs(grid, teleport_data, rows, cols):
 
     return []
 
-def draw_path(grid, teleport_data, rows, cols):
-    path = bfs(grid, teleport_data, rows, cols)
+def draw_path(path):
     path = path[1:-1]
 
     pygame.time.delay(1000)
@@ -189,7 +188,9 @@ def main(maze_path):
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-    draw_path(maze_path, teleport_data, rows, cols)
+    # draw_path(maze_path, teleport_data, rows, cols)
+    path = bfs(maze_data, teleport_data, rows, cols)
+    draw_path(path)
 
     # --------------------------------
 
