@@ -30,17 +30,20 @@ VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
 TELEPORT_IN_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_in.png'))
 TELEPORT_OUT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_out.png'))
 PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
-
+TELEPORT_IN_VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_in_visited.png'))
+TELEPORT_OUT_VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_out_visited.png'))
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG
+    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
     WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
     VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
     TELEPORT_IN_IMG = pygame.transform.scale(TELEPORT_IN_IMG,(CELL_WIDTH,CELL_HEIGHT))
+    TELEPORT_IN_VISITED_IMG = pygame.transform.scale(TELEPORT_IN_VISITED_IMG,(CELL_WIDTH,CELL_HEIGHT))
     TELEPORT_OUT_IMG = pygame.transform.scale(TELEPORT_OUT_IMG,(CELL_WIDTH,CELL_HEIGHT))
+    TELEPORT_OUT_VISITED_IMG = pygame.transform.scale(TELEPORT_OUT_VISITED_IMG,(CELL_WIDTH,CELL_HEIGHT))
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
 # DRAW METHOD
@@ -183,8 +186,13 @@ def draw_path(path, teleport_data):
         is_teleport = False
         for teleport in teleport_data:
             x1, y1, x2, y2 = teleport
-            if (x, y) == (x1, y1) or (x, y) == (x2, y2):
+            if (x, y) == (x1, y1):
                 is_teleport = True
+                draw_cell(x, y, TELEPORT_IN_VISITED_IMG)
+                break
+            if (x, y) == (x2, y2):
+                is_teleport = True
+                draw_cell(x, y, TELEPORT_OUT_VISITED_IMG)
                 break
         if not is_teleport:
             draw_cell(x, y, PATH_IMG)
