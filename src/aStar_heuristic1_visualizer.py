@@ -219,7 +219,7 @@ def main(maze_path):
     pygame.quit()
 
 if len(sys.argv) != 2:
-    print("Usage: python bfs_visualizer.py <path>")
+    print("Usage: python aStar_heuristic1_visualizer.py <path>")
 else:
     maze_path = sys.argv[1]
     main(maze_path)
