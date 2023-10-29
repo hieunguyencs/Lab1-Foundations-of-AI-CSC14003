@@ -29,10 +29,11 @@ WALL_IMG = pygame.image.load(os.path.join('..', 'Assets', 'wall.jpg'))
 VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
 PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
 BUS_STOP_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'bus_stop_checked.png'))
+START_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start_checked.png'))
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, BUS_STOP_CHECK_IMG
+    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, BUS_STOP_CHECK_IMG, START_CHECK_IMG
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
     GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
@@ -40,6 +41,7 @@ def scale_img():
     VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
     BUS_STOP_CHECK_IMG = pygame.transform.scale(BUS_STOP_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    START_CHECK_IMG = pygame.transform.scale(START_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
 # DRAW METHOD
 def draw_cell_no_delay(x, y, IMG): 
@@ -164,7 +166,7 @@ def cnt_distance(grid, rows, cols):
                 trace[new_x][new_y] = (x, y)
                 distance[new_x][new_y] = distance[x][y] + 1
 
-                draw_cell(new_x, new_y, VISITED_IMG)
+                # draw_cell(new_x, new_y, VISITED_IMG)
  
     return distance
 
@@ -226,9 +228,9 @@ def find_path(grid, gift_data, rows, cols):
     distance = cnt_distance(grid, rows, cols)
 
     # draw maze again
-    pygame.time.delay(long_delay)
-    draw_maze(grid, rows, cols)
-    pygame.time.delay(long_delay)
+    # pygame.time.delay(long_delay)
+    # draw_maze(grid, rows, cols)
+    # pygame.time.delay(long_delay)
 
     # save list of pick up cells and also start, end
     pick_up_list = []
@@ -246,6 +248,7 @@ def find_path(grid, gift_data, rows, cols):
     for x, y in pick_up_list:
         lst.append((y[0], y[1]))
 
+    draw_cell(start[0], start[1], START_CHECK_IMG)
     global total_path
     for i in range(1, len(pick_up_list)): 
         st = pick_up_list[i - 1][1]
@@ -258,6 +261,8 @@ def find_path(grid, gift_data, rows, cols):
         for x, y in total_path: 
             if ([x, y] == end): 
                 draw_cell_no_delay(x, y, END_IMG)
+            # elif [x, y] == start: 
+            #     draw_cell_no_delay(x, y, START_CHECK_IMG)
             elif ((x, y) in lst): 
                 draw_cell_no_delay(x, y, BUS_STOP_CHECK_IMG)
             else:
@@ -265,6 +270,8 @@ def find_path(grid, gift_data, rows, cols):
         for x, y in path: 
             if ([x, y] == end): 
                 draw_cell(x, y, END_IMG)
+            elif [x, y] == start: 
+                draw_cell(x, y, START_CHECK_IMG)
             elif ((x, y) == path[-1]): 
                 draw_cell(x, y, BUS_STOP_CHECK_IMG)
             else:
