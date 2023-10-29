@@ -1,15 +1,14 @@
-from collections import deque
-
 import pygame
 import os
 import sys
+from collections import deque
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Teleport")
+pygame.display.set_caption("BFS")
 FPS = 60
-delay = 30
+delay = 20
 long_delay = 1000
 
 # DEFINE COLOR
@@ -25,34 +24,29 @@ X_OFFSET, Y_OFFSET = 0, 0
 # INCLUDE IMAGE
 START_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start.jpg'))
 END_IMG = pygame.image.load(os.path.join('..', 'Assets', 'door.jpg'))
+GIFT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'gift.jpg'))
 WALL_IMG = pygame.image.load(os.path.join('..', 'Assets', 'wall.jpg'))
 VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
-TELEPORT_IN_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_in.png'))
-TELEPORT_OUT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_out.png'))
 PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
-TELEPORT_IN_VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_in_visited.png'))
-TELEPORT_OUT_VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_out_visited.png'))
+
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG
+    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
     WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
     VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    TELEPORT_IN_IMG = pygame.transform.scale(TELEPORT_IN_IMG,(CELL_WIDTH,CELL_HEIGHT))
-    TELEPORT_IN_VISITED_IMG = pygame.transform.scale(TELEPORT_IN_VISITED_IMG,(CELL_WIDTH,CELL_HEIGHT))
-    TELEPORT_OUT_IMG = pygame.transform.scale(TELEPORT_OUT_IMG,(CELL_WIDTH,CELL_HEIGHT))
-    TELEPORT_OUT_VISITED_IMG = pygame.transform.scale(TELEPORT_OUT_VISITED_IMG,(CELL_WIDTH,CELL_HEIGHT))
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
 # DRAW METHOD
-def draw_cell_no_delay(x, y, IMG):
+def draw_cell_no_delay(x, y, IMG): 
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
     WIN.blit(IMG, (drawX, drawY))
 
-def draw_cell(x, y, IMG):
+def draw_cell(x, y, IMG): 
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
     WIN.blit(IMG, (drawX, drawY))
@@ -60,6 +54,7 @@ def draw_cell(x, y, IMG):
     pygame.time.delay(delay)
 
 def draw_maze(maze_data, rows, cols):
+    WIN.fill(WHITE)
     for row in range(rows):
         for col in range(cols):
             cell = maze_data[row][col]
@@ -69,10 +64,9 @@ def draw_maze(maze_data, rows, cols):
                 draw_cell_no_delay(row, col, START_IMG)
             elif row == 0 or row == rows - 1 or col == 0 or col == cols - 1:
                 draw_cell_no_delay(row, col, END_IMG)
-            elif cell == 'o':
-                draw_cell_no_delay(row, col, TELEPORT_IN_IMG)
-            elif cell == 'O':
-                draw_cell_no_delay(row, col, TELEPORT_OUT_IMG)
+            elif cell == '+': 
+                draw_cell_no_delay(row, col, GIFT_IMG)
+    pygame.display.update()
 
 # LOAD MAZE GIVEN PATH
 def load_maze(maze_path):
@@ -84,13 +78,13 @@ def load_maze(maze_path):
 
     # Read maze
     maze_data = []
-    teleport_data = []
+    gift_data = []
     with open(maze_path, 'r') as file:
         lines = file.read().splitlines()
 
         n = list(map(int, lines[0].split()))[0]
-        for i in range(1, n + 1):
-            teleport_data.append(list(map(int, lines[i].split())))
+        for i in range(1, n + 1): 
+            gift_data.append(list(map(int, lines[i].split())))
 
         for line in lines[n + 1:]:
             maze_data.append(list(line))
@@ -100,42 +94,53 @@ def load_maze(maze_path):
 
     # Set up sizes and position
     global CELL_WIDTH, CELL_HEIGHT
-    if WIDTH / cols < HEIGHT / rows:
+    if WIDTH / cols < HEIGHT / rows: 
         CELL_WIDTH = CELL_HEIGHT = (WIDTH) / (cols + 2)
-    else:
+    else: 
         CELL_WIDTH = CELL_HEIGHT = (HEIGHT) / (rows + 2)
 
-    global X_OFFSET, Y_OFFSET
+    global X_OFFSET, Y_OFFSET   
     X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
     Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
 
     scale_img()
 
     # Draw maze
-    WIN.fill(WHITE)
     draw_maze(maze_data, rows, cols)
-    pygame.display.update()
     pygame.time.delay(long_delay)
 
-    return maze_data, teleport_data, rows, cols
+    return maze_data, gift_data, rows, cols
 
 # --- WRITE GRAPH FUNCTION HERE ---
 # You can call function draw_cell(x, y, IMG) to draw IMG at cell (x, y)
 
-def bfs(grid, teleport_data, rows, cols):
+total_path = []
+
+def cnt_distance(grid, rows, cols): 
     start_x, start_y = None, None
+
+    # Find a border cell that is not 'x' to start from
     for i in range(rows):
-        for j in range(cols):
-            if grid[i][j] == 'S':
-                start_x, start_y = i, j
-                break
-        if start_x is not None:
+        if grid[i][0] != 'x':
+            start_x, start_y = i, 0
             break
+        if grid[i][cols - 1] != 'x':
+            start_x, start_y = i, cols - 1
+            break
+    for j in range(cols):
+        if grid[0][j] != 'x':
+            start_x, start_y = 0, j
+            break
+        if grid[rows - 1][j] != 'x':
+            start_x, start_y = rows - 1, j
+            break
+
     if start_x is None:
         return []
 
     visited = [[False for _ in range(cols)] for _ in range(rows)]
     trace = [[(0, 0) for _ in range(cols)] for _ in range(rows)]
+    distance = [[0 for _ in range(cols)] for _ in range(rows)]
     queue = deque()
 
     queue.append((start_x, start_y))
@@ -148,66 +153,125 @@ def bfs(grid, teleport_data, rows, cols):
             new_x, new_y = x + dx[i], y + dy[i]
 
             if (
-                    0 <= new_x < rows
-                    and 0 <= new_y < cols
-                    and not visited[new_x][new_y]
-                    and grid[new_x][new_y] != 'x'
+                0 <= new_x < rows
+                and 0 <= new_y < cols
+                and not visited[new_x][new_y]
+                and grid[new_x][new_y] != 'x'
             ):
-                #queue.append((new_x, new_y))
+                queue.append((new_x, new_y))
+                visited[new_x][new_y] = True
+                trace[new_x][new_y] = (x, y)
+                distance[new_x][new_y] = distance[x][y] + 1
+
+                draw_cell(new_x, new_y, VISITED_IMG)
+ 
+    return distance
+
+def bfs(grid, rows, cols, start, end): 
+    print(start, end)
+
+    visited = [[False for _ in range(cols)] for _ in range(rows)]
+    trace = [[(0, 0) for _ in range(cols)] for _ in range(rows)]
+    queue = deque()
+
+    queue.append((start[0], start[1]))
+    visited[start[0]][start[1]] = True
+
+    while queue:
+        x, y = queue.popleft()
+
+        for i in range(4):
+            new_x, new_y = x + dx[i], y + dy[i]
+
+            if (
+                0 <= new_x < rows
+                and 0 <= new_y < cols
+                and not visited[new_x][new_y]
+                and grid[new_x][new_y] != 'x'
+            ):
+                queue.append((new_x, new_y))
                 visited[new_x][new_y] = True
                 trace[new_x][new_y] = (x, y)
 
-                if grid[new_x][new_y] == 'o':
-                    for teleport in teleport_data:
-                        x1, y1, x2, y2 = teleport
-                        if (new_x, new_y) == (x1, y1):
-                            queue.append((x2, y2))
-                            visited[x2][y2] = True
-                            trace[x2][y2] = (new_x, new_y)
-                    continue
-                queue.append((new_x, new_y))
-
-                if new_x == 0 or new_x == rows - 1 or new_y == 0 or new_y == cols - 1:
+                if new_x == end[0] and new_y == end[1]:
                     path = []
-                    while new_x != start_x or new_y != start_y:
+                    while new_x != start[0] or new_y != start[1]:
                         path.append((new_x, new_y))
                         new_x, new_y = trace[new_x][new_y]
-                    path.append((start_x, start_y))
+                    path.append(start)
                     path.reverse()
                     return path
-                if grid[new_x][new_y] != 'o' and grid[new_x][new_y] != 'O':
+                
+                global total_path
+                if ((new_x, new_y) not in total_path):
                     draw_cell(new_x, new_y, VISITED_IMG)
-
+ 
     return []
 
-def draw_path(path, teleport_data):
-    path = path[1:-1]
+def find_start(grid, num_row, num_col): 
+    for i in range(num_row):
+        for j in range(num_col):
+            if grid[i][j] == 'S':
+                return [i, j]
+            
+def find_end(grid, num_row, num_col): 
+    for i in range(num_row): 
+        for j in range(num_col): 
+            if (grid[i][j] != 'x'
+                and (i == 0 or i == num_row - 1
+                     or j == 0 or j == num_col - 1)): 
+                return [i, j]
 
-    pygame.time.delay(1000)
-    for x, y in path:
-        is_teleport = False
-        for teleport in teleport_data:
-            x1, y1, x2, y2 = teleport
-            if (x, y) == (x1, y1):
-                is_teleport = True
-                draw_cell(x, y, TELEPORT_IN_VISITED_IMG)
-                break
-            if (x, y) == (x2, y2):
-                is_teleport = True
-                draw_cell(x, y, TELEPORT_OUT_VISITED_IMG)
-                break
-        if not is_teleport:
+def find_path(grid, gift_data, rows, cols): 
+    # find distance from end to all pickup cell
+    distance = cnt_distance(grid, rows, cols)
+
+    # draw maze again
+    pygame.time.delay(long_delay)
+    draw_maze(grid, rows, cols)
+    pygame.time.delay(long_delay)
+
+    # save list of pick up cells and also start, end
+    pick_up_list = []
+    for x, y, z in gift_data: 
+        pick_up_list.append([distance[x][y], [x, y]])
+    pick_up_list.sort()
+    pick_up_list.reverse()
+    for i in pick_up_list:
+        print(i)
+    start = find_start(grid, rows, cols)
+    end = find_end(grid, rows, cols)
+    pick_up_list.append([0, end])
+    pick_up_list.insert(0, [0, start])
+
+    global total_path
+    for i in range(1, len(pick_up_list)): 
+        st = pick_up_list[i - 1][1]
+        en = pick_up_list[i][1]
+        path = bfs(grid, rows, cols, st, en)
+
+        print(len(path))
+
+        path = path[1:]
+
+        draw_maze(grid, rows, cols)
+        for x, y in total_path: 
+            draw_cell_no_delay(x, y, PATH_IMG)
+        for x, y in path: 
             draw_cell(x, y, PATH_IMG)
+
+        total_path = total_path + path
+
+    return len(total_path)
+
 # ---------------------------------
 
 def main(maze_path):
-    maze_data, teleport_data, rows, cols = load_maze(maze_path)
+    maze_data, gift_data, rows, cols = load_maze(maze_path)
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-    # draw_path(maze_path, teleport_data, rows, cols)
-    path = bfs(maze_data, teleport_data, rows, cols)
-    draw_path(path, teleport_data)
+    find_path(maze_data, gift_data, rows, cols)
 
     # --------------------------------
 
@@ -221,7 +285,7 @@ def main(maze_path):
     pygame.quit()
 
 if len(sys.argv) != 2:
-    print("Usage: python teleport_visualizer.py <path>")
+    print("Usage: python bfs_visualizer.py <path>")
 else:
     maze_path = sys.argv[1]
     main(maze_path)
