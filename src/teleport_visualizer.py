@@ -153,7 +153,7 @@ def bfs(grid, teleport_data, rows, cols):
                     and not visited[new_x][new_y]
                     and grid[new_x][new_y] != 'x'
             ):
-                queue.append((new_x, new_y))
+                #queue.append((new_x, new_y))
                 visited[new_x][new_y] = True
                 trace[new_x][new_y] = (x, y)
 
@@ -164,6 +164,8 @@ def bfs(grid, teleport_data, rows, cols):
                             queue.append((x2, y2))
                             visited[x2][y2] = True
                             trace[x2][y2] = (new_x, new_y)
+                    continue
+                queue.append((new_x, new_y))
 
                 if new_x == 0 or new_x == rows - 1 or new_y == 0 or new_y == cols - 1:
                     path = []
