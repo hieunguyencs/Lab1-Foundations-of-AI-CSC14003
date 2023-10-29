@@ -29,17 +29,19 @@ GIFT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'gift.jpg'))
 WALL_IMG = pygame.image.load(os.path.join('..', 'Assets', 'wall.jpg'))
 VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
 PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
+START_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start_checked.png'))
 
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG
+    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, START_CHECK_IMG
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
     GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
     WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
     VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    START_CHECK_IMG = pygame.transform.scale(START_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
 # DRAW METHOD
 def draw_cell_no_delay(x, y, IMG): 
@@ -193,6 +195,7 @@ def aStar(grid, num_row, num_col):
 
 def draw_path(path): 
     pygame.time.delay(long_delay)
+    draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
     path = path[1:-1]
     for x, y in path:
         draw_cell(x, y, PATH_IMG)
