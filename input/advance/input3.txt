@@ -1,9 +1,10 @@
-3
+4
 19 25 8 13
 21 3 15 28
 11 31 5 9
+1 1 1 10
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x   x   xx          xxx   x       x
+xo  x   xxO         xxx   x       x
 x     x x x  xx x x          xxx   
 x x    xx    xx xxx xx    xx  xx xx
 x x   x x xx   xxxx  xxxx x      xx
