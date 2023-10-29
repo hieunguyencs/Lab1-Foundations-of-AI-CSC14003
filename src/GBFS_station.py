@@ -24,21 +24,22 @@ X_OFFSET, Y_OFFSET = 0, 0
 # INCLUDE IMAGE
 START_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start.jpg'))
 END_IMG = pygame.image.load(os.path.join('..', 'Assets', 'door.jpg'))
-GIFT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'gift.jpg'))
+GIFT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'bus_stop.jpg'))
 WALL_IMG = pygame.image.load(os.path.join('..', 'Assets', 'wall.jpg'))
 VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
 PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
-
+BUS_STOP_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'bus_stop_checked.png'))
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG
+    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, BUS_STOP_CHECK_IMG
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
     GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
     WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
     VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    BUS_STOP_CHECK_IMG = pygame.transform.scale(BUS_STOP_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
 
 # DRAW METHOD
 def draw_cell_no_delay(x, y, IMG): 
@@ -168,8 +169,6 @@ def cnt_distance(grid, rows, cols):
     return distance
 
 def bfs(grid, rows, cols, start, end): 
-    print(start, end)
-
     visited = [[False for _ in range(cols)] for _ in range(rows)]
     trace = [[(0, 0) for _ in range(cols)] for _ in range(rows)]
     queue = deque()
@@ -237,12 +236,15 @@ def find_path(grid, gift_data, rows, cols):
         pick_up_list.append([distance[x][y], [x, y]])
     pick_up_list.sort()
     pick_up_list.reverse()
-    for i in pick_up_list:
-        print(i)
     start = find_start(grid, rows, cols)
     end = find_end(grid, rows, cols)
     pick_up_list.append([0, end])
     pick_up_list.insert(0, [0, start])
+
+    # list includes pick up cell
+    lst = []
+    for x, y in pick_up_list:
+        lst.append((y[0], y[1]))
 
     global total_path
     for i in range(1, len(pick_up_list)): 
@@ -250,16 +252,23 @@ def find_path(grid, gift_data, rows, cols):
         en = pick_up_list[i][1]
         path = bfs(grid, rows, cols, st, en)
 
-        print(len(path))
-
         path = path[1:]
 
         draw_maze(grid, rows, cols)
         for x, y in total_path: 
-            draw_cell_no_delay(x, y, PATH_IMG)
+            if ([x, y] == end): 
+                draw_cell_no_delay(x, y, END_IMG)
+            elif ((x, y) in lst): 
+                draw_cell_no_delay(x, y, BUS_STOP_CHECK_IMG)
+            else:
+                draw_cell_no_delay(x, y, PATH_IMG)
         for x, y in path: 
-            draw_cell(x, y, PATH_IMG)
-
+            if ([x, y] == end): 
+                draw_cell(x, y, END_IMG)
+            elif ((x, y) == path[-1]): 
+                draw_cell(x, y, BUS_STOP_CHECK_IMG)
+            else:
+                draw_cell(x, y, PATH_IMG)
         total_path = total_path + path
 
     return len(total_path)
