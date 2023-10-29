@@ -2,6 +2,7 @@ import pygame
 import os
 import sys
 from collections import deque
+import heapq
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
@@ -170,44 +171,59 @@ def cnt_distance(grid, rows, cols):
  
     return distance
 
-def bfs(grid, rows, cols, start, end): 
-    visited = [[False for _ in range(cols)] for _ in range(rows)]
-    trace = [[(0, 0) for _ in range(cols)] for _ in range(rows)]
-    queue = deque()
+def GBFS(grid, num_row, num_col, start, end): 
+    MAX_DIS = 1_000_000_000
+    distance = [[MAX_DIS for i in range(num_col)] for i in range(num_row)]
+    trace = [[[-1, -1] for i in range(num_col)] for i in range(num_row)]
+    closed = [[0 for i in range(num_col)] for i in range(num_row)]
 
-    queue.append((start[0], start[1]))
-    visited[start[0]][start[1]] = True
+    # heuristic: manhattan distance 
+    def h(x, y):
+        X = abs(x - end[0])
+        Y = abs(y - end[1])
+        return X + Y
+    
+    def constructPath(): 
+        X, Y = end
+        path = []
+        while [X, Y] != [-1, -1]: 
+            path.append([X, Y])
+            X, Y = trace[X][Y]
+        path.reverse()        
+        return path
+    
+    def inGrid(x, y): 
+        return (x >= 0 and x < num_row
+                and y >= 0 and y < num_col)
 
-    while queue:
-        x, y = queue.popleft()
+    heap = []
+    heapq.heappush(heap, [h(start[0], start[1]), start])
 
-        for i in range(4):
-            new_x, new_y = x + dx[i], y + dy[i]
+    while len(heap) > 0: 
+        next = heapq.heappop(heap)
+        picked_cell = next[1]
+        value = next[0]
 
-            if (
-                0 <= new_x < rows
-                and 0 <= new_y < cols
-                and not visited[new_x][new_y]
-                and grid[new_x][new_y] != 'x'
-            ):
-                queue.append((new_x, new_y))
-                visited[new_x][new_y] = True
-                trace[new_x][new_y] = (x, y)
+        if (picked_cell == end): 
+            break
 
-                if new_x == end[0] and new_y == end[1]:
-                    path = []
-                    while new_x != start[0] or new_y != start[1]:
-                        path.append((new_x, new_y))
-                        new_x, new_y = trace[new_x][new_y]
-                    path.append(start)
-                    path.reverse()
-                    return path
-                
-                global total_path
-                if ((new_x, new_y) not in total_path):
-                    draw_cell(new_x, new_y, VISITED_IMG)
- 
-    return []
+        closed[picked_cell[0]][picked_cell[1]] = 1
+
+        if (picked_cell != start): 
+            draw_cell(picked_cell[0], picked_cell[1], VISITED_IMG)
+
+        for i in range(4): 
+            next_x = picked_cell[0] + dx[i]
+            next_y = picked_cell[1] + dy[i]
+
+            if (inGrid(next_x, next_y)
+                and grid[next_x][next_y] != 'x'
+                and closed[next_x][next_y] == 0): 
+                distance[next_x][next_y] = distance[picked_cell[0]][picked_cell[1]] + 1
+                trace[next_x][next_y] = picked_cell
+                heapq.heappush(heap, [h(next_x, next_y), [next_x, next_y]])
+
+    return constructPath()
 
 def find_start(grid, num_row, num_col): 
     for i in range(num_row):
@@ -253,7 +269,7 @@ def find_path(grid, gift_data, rows, cols):
     for i in range(1, len(pick_up_list)): 
         st = pick_up_list[i - 1][1]
         en = pick_up_list[i][1]
-        path = bfs(grid, rows, cols, st, en)
+        path = GBFS(grid, rows, cols, st, en)
 
         path = path[1:]
 
@@ -287,7 +303,7 @@ def main(maze_path):
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-    find_path(maze_data, gift_data, rows, cols)
+    cost = find_path(maze_data, gift_data, rows, cols)
 
     # --------------------------------
 
