@@ -175,12 +175,19 @@ def bfs(grid, teleport_data, rows, cols):
 
     return []
 
-def draw_path(path):
+def draw_path(path, teleport_data):
     path = path[1:-1]
 
     pygame.time.delay(1000)
     for x, y in path:
-        draw_cell(x, y, PATH_IMG)
+        is_teleport = False
+        for teleport in teleport_data:
+            x1, y1, x2, y2 = teleport
+            if (x, y) == (x1, y1) or (x, y) == (x2, y2):
+                is_teleport = True
+                break
+        if not is_teleport:
+            draw_cell(x, y, PATH_IMG)
 # ---------------------------------
 
 def main(maze_path):
@@ -190,7 +197,7 @@ def main(maze_path):
     # Ex: DFS(maze_data, gift_data, rows, cols)
     # draw_path(maze_path, teleport_data, rows, cols)
     path = bfs(maze_data, teleport_data, rows, cols)
-    draw_path(path)
+    draw_path(path, teleport_data)
 
     # --------------------------------
 
