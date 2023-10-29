@@ -120,31 +120,26 @@ def load_maze(maze_path):
 
 total_path = []
 
+def find_start(grid, num_row, num_col): 
+    for i in range(num_row):
+        for j in range(num_col):
+            if grid[i][j] == 'S':
+                return [i, j]
+            
+def find_end(grid, num_row, num_col): 
+    for i in range(num_row): 
+        for j in range(num_col): 
+            if (grid[i][j] != 'x'
+                and (i == 0 or i == num_row - 1
+                     or j == 0 or j == num_col - 1)): 
+                return [i, j]
+
 def cnt_distance(grid, rows, cols): 
-    start_x, start_y = None, None
-
-    # Find a border cell that is not 'x' to start from
-    for i in range(rows):
-        if grid[i][0] != 'x':
-            start_x, start_y = i, 0
-            break
-        if grid[i][cols - 1] != 'x':
-            start_x, start_y = i, cols - 1
-            break
-    for j in range(cols):
-        if grid[0][j] != 'x':
-            start_x, start_y = 0, j
-            break
-        if grid[rows - 1][j] != 'x':
-            start_x, start_y = rows - 1, j
-            break
-
-    if start_x is None:
-        return []
+    start_x, start_y = find_end(grid, rows, cols)
 
     visited = [[False for _ in range(cols)] for _ in range(rows)]
     trace = [[(0, 0) for _ in range(cols)] for _ in range(rows)]
-    distance = [[0 for _ in range(cols)] for _ in range(rows)]
+    distance = [[0 for i in range(cols)] for i in range(rows)]
     queue = deque()
 
     queue.append((start_x, start_y))
@@ -209,7 +204,7 @@ def GBFS(grid, num_row, num_col, start, end):
 
         closed[picked_cell[0]][picked_cell[1]] = 1
 
-        if (picked_cell != start): 
+        if (picked_cell != start) and picked_cell not in total_path: 
             draw_cell(picked_cell[0], picked_cell[1], VISITED_IMG)
 
         for i in range(4): 
@@ -224,20 +219,6 @@ def GBFS(grid, num_row, num_col, start, end):
                 heapq.heappush(heap, [h(next_x, next_y), [next_x, next_y]])
 
     return constructPath()
-
-def find_start(grid, num_row, num_col): 
-    for i in range(num_row):
-        for j in range(num_col):
-            if grid[i][j] == 'S':
-                return [i, j]
-            
-def find_end(grid, num_row, num_col): 
-    for i in range(num_row): 
-        for j in range(num_col): 
-            if (grid[i][j] != 'x'
-                and (i == 0 or i == num_row - 1
-                     or j == 0 or j == num_col - 1)): 
-                return [i, j]
 
 def find_path(grid, gift_data, rows, cols): 
     # find distance from end to all pickup cell
@@ -259,16 +240,20 @@ def find_path(grid, gift_data, rows, cols):
     pick_up_list.append([0, end])
     pick_up_list.insert(0, [0, start])
 
-    # list includes pick up cell
+    # # list includes pick up cell
     lst = []
     for x, y in pick_up_list:
-        lst.append((y[0], y[1]))
+        lst.append(y)
 
     draw_cell(start[0], start[1], START_CHECK_IMG)
     global total_path
+    cur = pick_up_list[0][1]
     for i in range(1, len(pick_up_list)): 
-        st = pick_up_list[i - 1][1]
         en = pick_up_list[i][1]
+
+        if en in total_path: 
+            continue
+        st = cur
         path = GBFS(grid, rows, cols, st, en)
 
         path = path[1:]
@@ -279,20 +264,22 @@ def find_path(grid, gift_data, rows, cols):
                 draw_cell_no_delay(x, y, END_IMG)
             # elif [x, y] == start: 
             #     draw_cell_no_delay(x, y, START_CHECK_IMG)
-            elif ((x, y) in lst): 
+            elif ([x, y] in lst): 
                 draw_cell_no_delay(x, y, BUS_STOP_CHECK_IMG)
             else:
                 draw_cell_no_delay(x, y, PATH_IMG)
         for x, y in path: 
             if ([x, y] == end): 
                 draw_cell(x, y, END_IMG)
-            elif [x, y] == start: 
+            elif ([x, y] in lst): 
                 draw_cell(x, y, START_CHECK_IMG)
             elif ((x, y) == path[-1]): 
                 draw_cell(x, y, BUS_STOP_CHECK_IMG)
             else:
                 draw_cell(x, y, PATH_IMG)
         total_path = total_path + path
+
+        cur = en
 
     return len(total_path)
 
