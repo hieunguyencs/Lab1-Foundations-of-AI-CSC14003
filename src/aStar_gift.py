@@ -25,21 +25,36 @@ X_OFFSET, Y_OFFSET = 0, 0
 # INCLUDE IMAGE
 START_IMG = pygame.image.load(os.path.join('Assets', 'start.jpg'))
 END_IMG = pygame.image.load(os.path.join('Assets', 'door.jpg'))
-GIFT_IMG = pygame.image.load(os.path.join('Assets', 'gift.jpg'))
 WALL_IMG = pygame.image.load(os.path.join('Assets', 'wall.jpg'))
 VISITED_IMG = pygame.image.load(os.path.join('Assets', 'visited.jpg'))
+TELEPORT_IN_IMG = pygame.image.load(os.path.join('Assets', 'teleport_in.png'))
+TELEPORT_OUT_IMG = pygame.image.load(os.path.join('Assets', 'teleport_out.png'))
 PATH_IMG = pygame.image.load(os.path.join('Assets', 'path.jpg'))
+TELEPORT_IN_VISITED_IMG = pygame.image.load(os.path.join('Assets', 'teleport_in_visited.png'))
+TELEPORT_OUT_VISITED_IMG = pygame.image.load(os.path.join('Assets', 'teleport_out_visited.png'))
+START_IMG = pygame.image.load(os.path.join('Assets', 'start.jpg'))
+GIFT_CHECKED_IMG = pygame.image.load(os.path.join('Assets', 'gift_checked.png'))
+GIFT_IMG = pygame.image.load(os.path.join('Assets', 'gift.jpg'))
+START_CHECKED_IMG = pygame.image.load(os.path.join('Assets', 'start_checked.png'))
 
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG
+    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG, GIFT_CHECKED_IMG, START_CHECKED_IMG, GIFT_IMG
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
     WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
     VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    TELEPORT_IN_IMG = pygame.transform.scale(TELEPORT_IN_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    TELEPORT_IN_VISITED_IMG = pygame.transform.scale(TELEPORT_IN_VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    TELEPORT_OUT_IMG = pygame.transform.scale(TELEPORT_OUT_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    TELEPORT_OUT_VISITED_IMG = pygame.transform.scale(TELEPORT_OUT_VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    GIFT_CHECKED_IMG = pygame.transform.scale(GIFT_CHECKED_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    START_CHECKED_IMG = pygame.transform.scale(START_CHECKED_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
+
+# SCALE IMAGE
 
 
 # DRAW METHOD
@@ -49,9 +64,24 @@ def draw_cell_no_delay(x, y, IMG):
     WIN.blit(IMG, (drawX, drawY))
 
 
-def draw_cell(x, y, IMG):
+def draw_cell(x, y, IMG, start=None, gifts=None, stops=None, tele_in=None, tele_out=None):
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
+    if tele_in!= None and x == tele_in[0] and y == tele_in[1]:
+        IMG = TELEPORT_IN_IMG
+    if tele_out!= None and x == tele_out[0] and y == tele_out[1]:
+        IMG = TELEPORT_OUT_IMG
+    if gifts != None:
+        for gift in gifts:
+            if x == gift[0] and y == gift[1]:
+                IMG = GIFT_CHECKED_IMG
+                break
+    if stops != None:
+        for stop in stops:
+            pass
+    if start!= None and x == start[0] and y == start[1]:
+        IMG = START_CHECKED_IMG
+
     WIN.blit(IMG, (drawX, drawY))
     pygame.display.update()
     pygame.time.delay(delay)
@@ -135,7 +165,8 @@ def find_end(grid, num_row, num_col):
                          or j == 0 or j == num_col - 1)):
                 return [i, j]
 
-def aStarForGiftProb(grid, num_row, num_col, start, end):
+
+def aStarForGiftProb(grid, num_row, num_col, begin, start, end, gifts):
     MAX_DIS = 1_000_000_000
     distance = [[MAX_DIS for i in range(num_col)] for i in range(num_row)]
     trace = [[[-1, -1] for i in range(num_col)] for i in range(num_row)]
@@ -162,9 +193,9 @@ def aStarForGiftProb(grid, num_row, num_col, start, end):
         return (x >= 0 and x < num_row
                 and y >= 0 and y < num_col)
 
-    distance[start[0]][start[1]] = 0
-    heapq.heappush(heap, [h(start[0], start[1]), start])
-    open[start[0]][start[1]] = True
+    distance[begin[0]][begin[1]] = 0
+    heapq.heappush(heap, [h(begin[0], begin[1]), begin])
+    open[begin[0]][begin[1]] = True
 
     while len(heap) > 0:
         cur = heapq.heappop(heap)
@@ -173,8 +204,8 @@ def aStarForGiftProb(grid, num_row, num_col, start, end):
         if (cur_cell == end):
             return constructPath()
 
-        if cur_cell != start:
-            draw_cell(cur_cell[0], cur_cell[1], VISITED_IMG)
+        #if cur_cell != begin:
+        draw_cell(cur_cell[0], cur_cell[1], VISITED_IMG, start=start, gifts=gifts)
 
         open[cur_cell[0]][cur_cell[1]] = False
         for i in range(4):
@@ -195,17 +226,11 @@ def aStarForGiftProb(grid, num_row, num_col, start, end):
     return []
 
 
-def draw_path(path):
+def draw_path(path, start=None, gifts=None, stops=None, tele_in=None, tele_out=None):
     pygame.time.delay(long_delay)
-    path = path[1:-1]
+    path = path[0:-1]
     for x, y in path:
-        draw_cell(x, y, PATH_IMG)
-
-def remove_path(path):
-    pygame.time.delay(long_delay)
-    path = path[1:-1]
-    for x, y in path:
-        draw_cell(x, y, VISITED_IMG)
+        draw_cell(x, y, PATH_IMG, start=start, gifts=gifts, stops=stops, tele_in=tele_in, tele_out=tele_out)
 
 
 # ---------------------------------
@@ -217,15 +242,17 @@ def main(maze_path):
     # Ex: DFS(maze_data, gift_data, rows, cols)
     gifts_sort = sorted(gift_data, key=lambda point: point[2])
     start = find_start(maze_data, rows, cols)
+    save_start = start
     end = find_end(maze_data, rows, cols)
-    path=[]
+    path = []
     for i in range(len(gifts_sort)):
         gift = [gifts_sort[i][0], gifts_sort[i][1]]
-        path += aStarForGiftProb(maze_data, rows, cols, start, gift)
-        #draw_path(path)
+        path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=gift, gifts=gift_data)
+        # draw_path(path)
+        draw_cell(gifts_sort[i][0], gifts_sort[i][1], GIFT_CHECKED_IMG, gifts=gift_data, start=save_start)
         start = gift
-    path += aStarForGiftProb(maze_data, rows, cols, start, end)
-    draw_path(path)
+    path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=end, gifts=gift_data)
+    draw_path(path, gifts=gifts_sort, start=save_start)
 
     # --------------------------------
 
