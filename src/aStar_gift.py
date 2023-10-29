@@ -218,12 +218,13 @@ def main(maze_path):
     gifts_sort = sorted(gift_data, key=lambda point: point[2])
     start = find_start(maze_data, rows, cols)
     end = find_end(maze_data, rows, cols)
+    path=[]
     for i in range(len(gifts_sort)):
         gift = [gifts_sort[i][0], gifts_sort[i][1]]
-        path = aStarForGiftProb(maze_data, rows, cols, start, gift)
-        draw_path(path)
+        path += aStarForGiftProb(maze_data, rows, cols, start, gift)
+        #draw_path(path)
         start = gift
-    path = aStarForGiftProb(maze_data, rows, cols, start, end)
+    path += aStarForGiftProb(maze_data, rows, cols, start, end)
     draw_path(path)
 
     # --------------------------------
