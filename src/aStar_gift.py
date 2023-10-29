@@ -23,20 +23,20 @@ ROW, COL = 0, 0
 X_OFFSET, Y_OFFSET = 0, 0
 
 # INCLUDE IMAGE
-START_IMG = pygame.image.load(os.path.join('Assets', 'start.jpg'))
-END_IMG = pygame.image.load(os.path.join('Assets', 'door.jpg'))
-WALL_IMG = pygame.image.load(os.path.join('Assets', 'wall.jpg'))
-VISITED_IMG = pygame.image.load(os.path.join('Assets', 'visited.jpg'))
-TELEPORT_IN_IMG = pygame.image.load(os.path.join('Assets', 'teleport_in.png'))
-TELEPORT_OUT_IMG = pygame.image.load(os.path.join('Assets', 'teleport_out.png'))
-PATH_IMG = pygame.image.load(os.path.join('Assets', 'path.jpg'))
-TELEPORT_IN_VISITED_IMG = pygame.image.load(os.path.join('Assets', 'teleport_in_visited.png'))
-TELEPORT_OUT_VISITED_IMG = pygame.image.load(os.path.join('Assets', 'teleport_out_visited.png'))
-START_IMG = pygame.image.load(os.path.join('Assets', 'start.jpg'))
-GIFT_CHECKED_IMG = pygame.image.load(os.path.join('Assets', 'gift_checked.png'))
-GIFT_IMG = pygame.image.load(os.path.join('Assets', 'gift.jpg'))
-START_CHECKED_IMG = pygame.image.load(os.path.join('Assets', 'start_checked.png'))
-BUS_STOP_CHECK_IMG = pygame.image.load(os.path.join('Assets', 'bus_stop_checked.png'))
+START_IMG = pygame.image.load(os.path.join('..','Assets', 'start.jpg'))
+END_IMG = pygame.image.load(os.path.join('..','Assets', 'door.jpg'))
+WALL_IMG = pygame.image.load(os.path.join('..','Assets', 'wall.jpg'))
+VISITED_IMG = pygame.image.load(os.path.join('..','Assets', 'visited.jpg'))
+TELEPORT_IN_IMG = pygame.image.load(os.path.join('..','Assets', 'teleport_in.png'))
+TELEPORT_OUT_IMG = pygame.image.load(os.path.join('..','Assets', 'teleport_out.png'))
+PATH_IMG = pygame.image.load(os.path.join('..','Assets', 'path.jpg'))
+TELEPORT_IN_VISITED_IMG = pygame.image.load(os.path.join('..','Assets', 'teleport_in_visited.png'))
+TELEPORT_OUT_VISITED_IMG = pygame.image.load(os.path.join('..','Assets', 'teleport_out_visited.png'))
+START_IMG = pygame.image.load(os.path.join('..','Assets', 'start.jpg'))
+GIFT_CHECKED_IMG = pygame.image.load(os.path.join('..','Assets', 'gift_checked.png'))
+GIFT_IMG = pygame.image.load(os.path.join('..','Assets', 'gift.jpg'))
+START_CHECKED_IMG = pygame.image.load(os.path.join('..','Assets', 'start_checked.png'))
+BUS_STOP_CHECK_IMG = pygame.image.load(os.path.join('..','Assets', 'bus_stop_checked.png'))
 
 
 # SCALE IMAGE
