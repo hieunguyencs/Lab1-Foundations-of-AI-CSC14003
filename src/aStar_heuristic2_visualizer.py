@@ -7,7 +7,7 @@ import math
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("A*")
+pygame.display.set_caption("A* - Euclidean distance heuristic")
 FPS = 60
 delay = 30
 long_delay = 1000
@@ -194,6 +194,8 @@ def aStar(grid, num_row, num_col):
     return []
 
 def draw_path(path): 
+    if len(path) == 0: 
+        return
     pygame.time.delay(long_delay)
     draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
     path = path[1:-1]

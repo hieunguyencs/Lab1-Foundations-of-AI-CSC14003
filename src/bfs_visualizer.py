@@ -165,6 +165,9 @@ def bfs(grid, rows, cols):
 def draw_path(grid, rows, cols):
     path = bfs(grid, rows, cols)
     
+    if len(path) == 0: 
+        return
+
     pygame.time.delay(1000)
     draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
     path = path[1:-1]

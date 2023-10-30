@@ -182,6 +182,8 @@ def ucs(grid, num_row, num_col):
     return path
 
 def draw_path(path): 
+    if (len(path) == 0): 
+        return
     pygame.time.delay(1000)
     draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
     path = path[1:-1]

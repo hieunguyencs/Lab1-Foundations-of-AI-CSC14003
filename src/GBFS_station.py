@@ -7,7 +7,7 @@ import heapq
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("BFS")
+pygame.display.set_caption("Stations")
 FPS = 60
 delay = 20
 long_delay = 1000
@@ -271,8 +271,8 @@ def find_path(grid, gift_data, rows, cols):
         for x, y in path: 
             if ([x, y] == end): 
                 draw_cell(x, y, END_IMG)
-            elif ([x, y] in lst): 
-                draw_cell(x, y, START_CHECK_IMG)
+            # elif ([x, y] == start): 
+            #     draw_cell(x, y, START_CHECK_IMG)
             elif ((x, y) == path[-1]): 
                 draw_cell(x, y, BUS_STOP_CHECK_IMG)
             else:

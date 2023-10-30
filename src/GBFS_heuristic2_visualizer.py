@@ -7,7 +7,7 @@ import math
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("GBFS - Manhattan distance heuristic")
+pygame.display.set_caption("GBFS - Euclidean distance heuristic")
 FPS = 60
 delay = 30
 long_delay = 1000

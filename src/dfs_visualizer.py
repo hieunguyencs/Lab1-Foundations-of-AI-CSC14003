@@ -165,6 +165,8 @@ def DFS(a, rows, cols):
     path.reverse()
 
     # Draw path
+    if len(path) == 0: 
+        return
     pygame.time.delay(long_delay)
     draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
     path = path[1:-1]
