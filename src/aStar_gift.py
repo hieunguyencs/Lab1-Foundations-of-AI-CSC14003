@@ -3,6 +3,7 @@ import os
 import sys
 import heapq
 import math
+from WriteOutput import writeToFile
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
@@ -22,6 +23,7 @@ dy = [0, 0, 1, -1]
 ROW, COL = 0, 0
 X_OFFSET, Y_OFFSET = 0, 0
 
+DEFAULT_OUT = "../output/output.txt"
 # INCLUDE IMAGE
 START_IMG = pygame.image.load(os.path.join('..','Assets', 'start.jpg'))
 END_IMG = pygame.image.load(os.path.join('..','Assets', 'door.jpg'))
@@ -252,13 +254,14 @@ def main(maze_path):
     path = []
     for i in range(len(gifts_sort)):
         gift = [gifts_sort[i][0], gifts_sort[i][1]]
-        path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=gift, gifts=gift_data)
+        path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=gift, gifts=gift_data)[:-1]
         # draw_path(path)
         draw_cell(gifts_sort[i][0], gifts_sort[i][1], GIFT_CHECKED_IMG, gifts=gift_data, start=save_start, door=end)
         start = gift
     path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=end, gifts=gift_data)
     draw_path(path, gifts=gifts_sort, start=save_start, door=end)
-
+    DEFAULT_OUT=maze_path.replace("input", "output")
+    writeToFile(file_name=DEFAULT_OUT, path=path)
     # --------------------------------
 
     clock = pygame.time.Clock()
