@@ -3,7 +3,7 @@ def writeToFile(file_name="output.txt", path=None):
         return
     print("Check path again:\n", path)
     with open(file_name, 'w') as out:
-        out.write(str(len(path)))
+        out.write(str(len(path)-1))
         #write path
         #out.write('\n')
         #for point in path:
