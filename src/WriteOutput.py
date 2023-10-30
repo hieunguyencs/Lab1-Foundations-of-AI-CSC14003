@@ -1,9 +1,9 @@
-def writeToFile(file_name="output.txt", path=None):
+def writeToFile(file_name="output.txt", path=None, bonus=0):
     if path==None:
         return
     print("Check path again:\n", path)
     with open(file_name, 'w') as out:
-        out.write(str(len(path)-1))
+        out.write(str(len(path)-1+bonus))
         #write path
         #out.write('\n')
         #for point in path:

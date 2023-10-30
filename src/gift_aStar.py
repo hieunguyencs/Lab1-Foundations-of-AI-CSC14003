@@ -243,25 +243,28 @@ def draw_path(path, start=None, gifts=None, stops=None, tele_in=None, tele_out=N
 # ---------------------------------
 
 def main(maze_path):
-    maze_data, gift_data, rows, cols = load_maze(maze_path)
+    maze_data, gift_datas, rows, cols = load_maze(maze_path)
 
+    sumGifts = 0
+    for i in gift_datas:
+        sumGifts+=i[2]
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-    gifts_sort = sorted(gift_data, key=lambda point: point[2])
+    gifts_sort = sorted(gift_datas, key=lambda point: point[2])
     start = find_start(maze_data, rows, cols)
     save_start = start
     end = find_end(maze_data, rows, cols)
     path = []
     for i in range(len(gifts_sort)):
         gift = [gifts_sort[i][0], gifts_sort[i][1]]
-        path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=gift, gifts=gift_data)[:-1]
+        path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=gift, gifts=gift_datas)[:-1]
         # draw_path(path)
-        draw_cell(gifts_sort[i][0], gifts_sort[i][1], GIFT_CHECKED_IMG, gifts=gift_data, start=save_start, door=end)
+        draw_cell(gifts_sort[i][0], gifts_sort[i][1], GIFT_CHECKED_IMG, gifts=gift_datas, start=save_start, door=end)
         start = gift
-    path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=end, gifts=gift_data)
+    path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=end, gifts=gift_datas)
     draw_path(path, gifts=gifts_sort, start=save_start, door=end)
     DEFAULT_OUT=maze_path.replace("input", "output")
-    writeToFile(file_name=DEFAULT_OUT, path=path)
+    writeToFile(file_name=DEFAULT_OUT, path=path, bonus=sumGifts)
     # --------------------------------
 
     clock = pygame.time.Clock()
