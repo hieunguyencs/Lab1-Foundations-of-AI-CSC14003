@@ -193,18 +193,20 @@ def GBFS(grid, num_row, num_col, start, end):
 
     heap = []
     heapq.heappush(heap, [h(start[0], start[1]), start])
-
+    closed[start[0]][start[1]] = 1
+    found = False
     while len(heap) > 0: 
+        if (found): 
+            break
+        
         next = heapq.heappop(heap)
         picked_cell = next[1]
         value = next[0]
 
-        if (picked_cell == end): 
-            break
+        # if (picked_cell == end): 
+        #     break
 
-        closed[picked_cell[0]][picked_cell[1]] = 1
-
-        if (picked_cell != start) and picked_cell not in total_path: 
+        if (picked_cell != start): 
             draw_cell(picked_cell[0], picked_cell[1], VISITED_IMG)
 
         for i in range(4): 
@@ -214,9 +216,15 @@ def GBFS(grid, num_row, num_col, start, end):
             if (inGrid(next_x, next_y)
                 and grid[next_x][next_y] != 'x'
                 and closed[next_x][next_y] == 0): 
+
                 distance[next_x][next_y] = distance[picked_cell[0]][picked_cell[1]] + 1
                 trace[next_x][next_y] = picked_cell
+                closed[next_x][next_y] = 1
                 heapq.heappush(heap, [h(next_x, next_y), [next_x, next_y]])
+
+                if [next_x, next_y] == end: 
+                    found = True
+                    break
 
     return constructPath()
 
@@ -262,8 +270,8 @@ def find_path(grid, gift_data, rows, cols):
         for x, y in total_path: 
             if ([x, y] == end): 
                 draw_cell_no_delay(x, y, END_IMG)
-            # elif [x, y] == start: 
-            #     draw_cell_no_delay(x, y, START_CHECK_IMG)
+            elif [x, y] == start: 
+                draw_cell_no_delay(x, y, START_CHECK_IMG)
             elif ([x, y] in lst): 
                 draw_cell_no_delay(x, y, BUS_STOP_CHECK_IMG)
             else:
@@ -271,9 +279,11 @@ def find_path(grid, gift_data, rows, cols):
         for x, y in path: 
             if ([x, y] == end): 
                 draw_cell(x, y, END_IMG)
-            # elif ([x, y] == start): 
-            #     draw_cell(x, y, START_CHECK_IMG)
+            elif ([x, y] == start): 
+                draw_cell(x, y, START_CHECK_IMG)
             elif ((x, y) == path[-1]): 
+                draw_cell(x, y, BUS_STOP_CHECK_IMG)
+            elif ([x, y] in lst): 
                 draw_cell(x, y, BUS_STOP_CHECK_IMG)
             else:
                 draw_cell(x, y, PATH_IMG)
