@@ -37,11 +37,11 @@ GIFT_CHECKED_IMG = pygame.image.load(os.path.join('..','Assets', 'gift_checked.p
 GIFT_IMG = pygame.image.load(os.path.join('..','Assets', 'gift.jpg'))
 START_CHECKED_IMG = pygame.image.load(os.path.join('..','Assets', 'start_checked.png'))
 BUS_STOP_CHECK_IMG = pygame.image.load(os.path.join('..','Assets', 'bus_stop_checked.png'))
-
+DOOR_OPEN = pygame.image.load(os.path.join('..','Assets', 'door_checked.png'))
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG, GIFT_CHECKED_IMG, START_CHECKED_IMG, GIFT_IMG, BUS_STOP_CHECK_IMG
+    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG, GIFT_CHECKED_IMG, START_CHECKED_IMG, GIFT_IMG, BUS_STOP_CHECK_IMG, DOOR_OPEN
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
     WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
@@ -55,7 +55,7 @@ def scale_img():
     START_CHECKED_IMG = pygame.transform.scale(START_CHECKED_IMG, (CELL_WIDTH, CELL_HEIGHT))
     GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
     BUS_STOP_CHECK_IMG = pygame.transform.scale(BUS_STOP_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
-
+    DOOR_OPEN = pygame.transform.scale(DOOR_OPEN, (CELL_WIDTH, CELL_HEIGHT))
 # SCALE IMAGE
 
 
@@ -66,7 +66,7 @@ def draw_cell_no_delay(x, y, IMG):
     WIN.blit(IMG, (drawX, drawY))
 
 
-def draw_cell(x, y, IMG, start=None, gifts=None, stops=None, tele_in=None, tele_out=None):
+def draw_cell(x, y, IMG, start=None, gifts=None, stops=None, tele_in=None, tele_out=None, door=None):
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
     if tele_in!= None and x == tele_in[0] and y == tele_in[1]:
@@ -85,6 +85,8 @@ def draw_cell(x, y, IMG, start=None, gifts=None, stops=None, tele_in=None, tele_
                 break
     if start!= None and x == start[0] and y == start[1]:
         IMG = START_CHECKED_IMG
+    if door!= None and x == door[0] and y == door[1]:
+        IMG = DOOR_OPEN
 
     WIN.blit(IMG, (drawX, drawY))
     pygame.display.update()
@@ -209,7 +211,7 @@ def aStarForGiftProb(grid, num_row, num_col, begin, start, end, gifts):
             return constructPath()
 
         #if cur_cell != begin:
-        draw_cell(cur_cell[0], cur_cell[1], VISITED_IMG, start=start, gifts=gifts)
+        draw_cell(cur_cell[0], cur_cell[1], VISITED_IMG, start=start, gifts=gifts, door=end)
 
         open[cur_cell[0]][cur_cell[1]] = False
         for i in range(4):
@@ -230,11 +232,10 @@ def aStarForGiftProb(grid, num_row, num_col, begin, start, end, gifts):
     return []
 
 
-def draw_path(path, start=None, gifts=None, stops=None, tele_in=None, tele_out=None):
+def draw_path(path, start=None, gifts=None, stops=None, tele_in=None, tele_out=None, door=None):
     pygame.time.delay(long_delay)
-    path = path[0:-1]
     for x, y in path:
-        draw_cell(x, y, PATH_IMG, start=start, gifts=gifts, stops=stops, tele_in=tele_in, tele_out=tele_out)
+        draw_cell(x, y, PATH_IMG, start=start, gifts=gifts, stops=stops, tele_in=tele_in, tele_out=tele_out, door=door)
 
 
 # ---------------------------------
@@ -253,10 +254,10 @@ def main(maze_path):
         gift = [gifts_sort[i][0], gifts_sort[i][1]]
         path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=gift, gifts=gift_data)
         # draw_path(path)
-        draw_cell(gifts_sort[i][0], gifts_sort[i][1], GIFT_CHECKED_IMG, gifts=gift_data, start=save_start)
+        draw_cell(gifts_sort[i][0], gifts_sort[i][1], GIFT_CHECKED_IMG, gifts=gift_data, start=save_start, door=end)
         start = gift
     path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=end, gifts=gift_data)
-    draw_path(path, gifts=gifts_sort, start=save_start)
+    draw_path(path, gifts=gifts_sort, start=save_start, door=end)
 
     # --------------------------------
 

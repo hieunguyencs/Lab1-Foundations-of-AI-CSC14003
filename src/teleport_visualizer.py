@@ -33,10 +33,11 @@ PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
 TELEPORT_IN_VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_in_visited.png'))
 TELEPORT_OUT_VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_out_visited.png'))
 START_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start_checked.png'))
+DOOR_OPEN = pygame.image.load(os.path.join('..','Assets', 'door_checked.png'))
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG, START_CHECK_IMG
+    global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG, START_CHECK_IMG, DOOR_OPEN
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
     WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
@@ -47,6 +48,7 @@ def scale_img():
     TELEPORT_OUT_VISITED_IMG = pygame.transform.scale(TELEPORT_OUT_VISITED_IMG,(CELL_WIDTH,CELL_HEIGHT))
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
     START_CHECK_IMG = pygame.transform.scale(START_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    DOOR_OPEN = pygame.transform.scale(DOOR_OPEN, (CELL_WIDTH, CELL_HEIGHT))
 
 # DRAW METHOD
 def draw_cell_no_delay(x, y, IMG):
@@ -185,6 +187,7 @@ def bfs(grid, teleport_data, rows, cols):
 def draw_path(path, teleport_data):
     pygame.time.delay(1000)
     draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
+    end=path[-1]
     path = path[1:-1]
     for x, y in path:
         is_teleport = False
@@ -200,6 +203,7 @@ def draw_path(path, teleport_data):
                 break
         if not is_teleport:
             draw_cell(x, y, PATH_IMG)
+    draw_cell(end[0], end[1], DOOR_OPEN)
 # ---------------------------------
 
 def main(maze_path):

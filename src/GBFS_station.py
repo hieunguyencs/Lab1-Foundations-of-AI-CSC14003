@@ -31,10 +31,11 @@ VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
 PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
 BUS_STOP_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'bus_stop_checked.png'))
 START_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start_checked.png'))
+DOOR_OPEN = pygame.image.load(os.path.join('..','Assets', 'door_checked.png'))
 
 # SCALE IMAGE
 def scale_img():
-    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, BUS_STOP_CHECK_IMG, START_CHECK_IMG
+    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, BUS_STOP_CHECK_IMG, START_CHECK_IMG, DOOR_OPEN
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
     GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
@@ -43,6 +44,7 @@ def scale_img():
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
     BUS_STOP_CHECK_IMG = pygame.transform.scale(BUS_STOP_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
     START_CHECK_IMG = pygame.transform.scale(START_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    DOOR_OPEN = pygame.transform.scale(DOOR_OPEN, (CELL_WIDTH, CELL_HEIGHT))
 
 # DRAW METHOD
 def draw_cell_no_delay(x, y, IMG): 
@@ -288,7 +290,7 @@ def find_path(grid, gift_data, rows, cols):
             else:
                 draw_cell(x, y, PATH_IMG)
         total_path = total_path + path
-
+        draw_cell(total_path[-1][0], total_path[-1][1], DOOR_OPEN)
         cur = en
 
     return len(total_path)
