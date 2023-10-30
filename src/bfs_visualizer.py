@@ -2,6 +2,7 @@ import pygame
 import os
 import sys
 from collections import deque
+from WriteOutput import *
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
@@ -164,9 +165,7 @@ def bfs(grid, rows, cols):
  
     return []
 
-def draw_path(grid, rows, cols):
-    path = bfs(grid, rows, cols)
-    
+def draw_path(path):
     if len(path) == 0: 
         return
 
@@ -177,7 +176,6 @@ def draw_path(grid, rows, cols):
     for x, y in path:
         draw_cell(x, y, PATH_IMG)
     draw_cell(end[0], end[1], DOOR_OPEN)
-
 # ---------------------------------
 
 def main(maze_path):
@@ -185,7 +183,12 @@ def main(maze_path):
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-    draw_path(maze_data, rows, cols)
+    path = bfs(maze_data, rows, cols)
+    draw_path(path)
+
+    cost_file = generate_output_path(maze_path, "bfs")
+    cost_file = cost_file + "/bfs.txt"
+    writeToFile(cost_file, path)
 
     # --------------------------------
 
