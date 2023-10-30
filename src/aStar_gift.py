@@ -9,7 +9,7 @@ WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("A*")
 FPS = 60
-delay = 30
+delay = 20
 long_delay = 1000
 
 # DEFINE COLOR

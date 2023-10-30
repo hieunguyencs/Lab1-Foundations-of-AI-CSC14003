@@ -7,7 +7,7 @@ WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("DFS")
 FPS = 60
-delay = 50
+delay = 20
 long_delay = 1000
 
 # DEFINE COLOR

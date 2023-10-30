@@ -9,7 +9,7 @@ WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("GBFS - Euclidean distance heuristic")
 FPS = 60
-delay = 30
+delay = 20
 long_delay = 1000
 
 # DEFINE COLOR
@@ -160,16 +160,18 @@ def GBFS(grid, num_row, num_col):
 
     heap = []
     heapq.heappush(heap, [h(start[0], start[1]), start])
-
+    closed[start[0]][start[1]] = 1
+    found = False
     while len(heap) > 0: 
+        if (found): 
+            break
+        
         next = heapq.heappop(heap)
         picked_cell = next[1]
         value = next[0]
 
-        if (picked_cell == end): 
-            break
-
-        closed[picked_cell[0]][picked_cell[1]] = 1
+        # if (picked_cell == end): 
+        #     break
 
         if (picked_cell != start): 
             draw_cell(picked_cell[0], picked_cell[1], VISITED_IMG)
@@ -181,9 +183,15 @@ def GBFS(grid, num_row, num_col):
             if (inGrid(next_x, next_y)
                 and grid[next_x][next_y] != 'x'
                 and closed[next_x][next_y] == 0): 
+
                 distance[next_x][next_y] = distance[picked_cell[0]][picked_cell[1]] + 1
                 trace[next_x][next_y] = picked_cell
+                closed[next_x][next_y] = 1
                 heapq.heappush(heap, [h(next_x, next_y), [next_x, next_y]])
+
+                if [next_x, next_y] == end: 
+                    found = True
+                    break
 
     # draw path
     path = constructPath()
