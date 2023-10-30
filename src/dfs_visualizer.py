@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+from WriteOutput import *
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
@@ -166,7 +167,9 @@ def DFS(a, rows, cols):
         X, Y = trace[X][Y]
     path.reverse()
 
-    # Draw path
+    return path
+
+def draw_path(path): 
     if len(path) == 0: 
         return
     pygame.time.delay(long_delay)
@@ -184,7 +187,12 @@ def main(maze_path):
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-    DFS(maze_data, rows, cols)
+    path = DFS(maze_data, rows, cols)
+    draw_path(path)
+
+    dir_name = generate_output_path(maze_path, "dfs")
+    cost_file = dir_name + "/dfs.txt"
+    writeToFile(cost_file, path)
 
     # --------------------------------
 

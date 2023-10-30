@@ -3,6 +3,7 @@ import os
 import sys
 import heapq
 import math
+from WriteOutput import *
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
@@ -207,7 +208,7 @@ def GBFS(grid, num_row, num_col):
             draw_cell(x, y, PATH_IMG)
         draw_cell(end[0], end[1], DOOR_OPEN)
 
-    return len(path) + 1
+    return path
 
 # ---------------------------------
 
@@ -216,7 +217,11 @@ def main(maze_path):
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-    GBFS(maze_data, rows, cols)
+    path = GBFS(maze_data, rows, cols)
+
+    dir_name = generate_output_path(maze_path, "GBFS_heuristic_2")
+    cost_file = dir_name + "/GBFS_heuristic_2.txt"
+    writeToFile(cost_file, path)
 
     # --------------------------------
 

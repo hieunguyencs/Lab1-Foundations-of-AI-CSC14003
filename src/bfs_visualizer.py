@@ -186,8 +186,8 @@ def main(maze_path):
     path = bfs(maze_data, rows, cols)
     draw_path(path)
 
-    cost_file = generate_output_path(maze_path, "bfs")
-    cost_file = cost_file + "/bfs.txt"
+    dir_name = generate_output_path(maze_path, "bfs")
+    cost_file = dir_name + "/bfs.txt"
     writeToFile(cost_file, path)
 
     # --------------------------------

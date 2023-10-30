@@ -3,6 +3,7 @@ import os
 import sys
 from collections import deque
 import heapq
+from WriteOutput import *
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
@@ -293,7 +294,8 @@ def find_path(grid, gift_data, rows, cols):
         draw_cell(total_path[-1][0], total_path[-1][1], DOOR_OPEN)
         cur = en
 
-    return len(total_path)
+    total_path.insert(0, start)
+    return total_path
 
 # ---------------------------------
 
@@ -302,7 +304,11 @@ def main(maze_path):
 
     # --- CALL GRAPH FUNCTION HERE ---
     # Ex: DFS(maze_data, gift_data, rows, cols)
-    cost = find_path(maze_data, gift_data, rows, cols)
+    path = find_path(maze_data, gift_data, rows, cols)
+
+    dir_name = generate_output_path(maze_path, "GBFS_station")
+    cost_file = dir_name + "/GBFS_station.txt"
+    writeToFile(cost_file, path)
 
     # --------------------------------
 

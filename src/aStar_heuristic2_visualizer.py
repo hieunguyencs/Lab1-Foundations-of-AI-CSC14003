@@ -3,6 +3,7 @@ import os
 import sys
 import heapq
 import math
+from WriteOutput import *
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
@@ -215,6 +216,10 @@ def main(maze_path):
     # Ex: DFS(maze_data, gift_data, rows, cols)
     path = aStar(maze_data, rows, cols)
     draw_path(path)
+
+    dir_name = generate_output_path(maze_path, "astar_heuristic_2")
+    cost_file = dir_name + "/astar_heuristic_2.txt"
+    writeToFile(cost_file, path)
 
     # --------------------------------
 

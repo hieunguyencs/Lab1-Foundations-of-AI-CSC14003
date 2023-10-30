@@ -216,6 +216,11 @@ def main(maze_path):
     path = aStar(maze_data, rows, cols)
     draw_path(path)
 
+
+    dir_name = generate_output_path(maze_path, "astar_heuristic_1")
+    cost_file = dir_name + "/astar_heuristic_1.txt"
+    writeToFile(cost_file, path)
+
     # --------------------------------
 
     clock = pygame.time.Clock()

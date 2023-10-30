@@ -6,6 +6,7 @@ def writeToFile(file_name="output.txt", path=None, bonus=0):
 
     # Create the directory structure if it doesn't exist
     directory = os.path.dirname(file_name)
+    # print(directory)
     if directory:
         os.makedirs(directory, exist_ok=True)
 
@@ -31,13 +32,16 @@ def checkDuplicatePointInPath(path):
 
 def generate_output_path(maze_path, algorithm):
     # Extract the directory of the input maze path
-    directory = os.path.dirname(maze_path)
-
-    # Extract the level number from the directory name
-    level = os.path.basename(directory)
+    base_directory = maze_path[:-4]
+    tmp = base_directory.split("/")
+    tmp = tmp[2:]
+    base_directory = "/".join(tmp)
 
     # Construct the output directory path
-    output_directory = os.path.join('..', 'output', level, algorithm)
+    output_directory = os.path.join('..', 'output', base_directory, algorithm)
+
+    # print(output_directory)
 
     return output_directory
+
 
