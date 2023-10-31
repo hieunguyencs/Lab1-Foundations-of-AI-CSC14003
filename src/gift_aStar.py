@@ -256,16 +256,23 @@ def main(maze_path):
     path = []
     for i in range(len(gifts_sort)):
         gift = [gifts_sort[i][0], gifts_sort[i][1]]
-        path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=gift, gifts=gift_datas)[:-1]
+        subPath = aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=gift, gifts=gift_datas)[:-1]
+        if subPath is None or len(subPath)==0:
+            path=[]
+            break
+        path += subPath
         # draw_path(path)
         draw_cell(gifts_sort[i][0], gifts_sort[i][1], GIFT_CHECKED_IMG, gifts=gift_datas, start=save_start, door=end)
         start = gift
-    path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=end, gifts=gift_datas)
+    lastPath = aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=end, gifts=gift_datas)
+    if lastPath is None or len(lastPath) == 0:
+        path = []
+    else:
+        path += lastPath
     draw_path(path, gifts=gifts_sort, start=save_start, door=end)
     dir_name = generate_output_path(maze_path, "AStar-Greedy_gift")
     cost_file = dir_name + "/AStar-Greedy_gift.txt"
     writeToFile(file_name=cost_file, path=path, bonus=sumGifts, WIN=WIN)
-
 
     # --------------------------------
 
