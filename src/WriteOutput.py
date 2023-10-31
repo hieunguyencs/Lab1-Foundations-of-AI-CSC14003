@@ -1,8 +1,10 @@
 import os
+
+import cv2
 import pygame
 
 
-def writeToFile(file_name="output.txt", path=None, bonus=0, WIN=None):
+def writeToFile(file_name="output.txt", path=None, bonus=0, WIN=None, frames=None):
     if path is None:
         return
 
@@ -26,7 +28,19 @@ def writeToFile(file_name="output.txt", path=None, bonus=0, WIN=None):
         return
     image_path = file_name.split('.txt')[0] + '.png'
     pygame.image.save(WIN, image_path)
-    print("-----Saved cost(.txt) and path(.png)-----")
+
+    video_path = file_name.split('.txt')[0] + '.mp4'
+    height, width, layers = frames[0].shape
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Định dạng video codec
+    out = cv2.VideoWriter(video_path, fourcc, 30.0, (height, width))
+    rotated_frames = [cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) for frame in frames]
+    flipped_frames_horizontal = [cv2.flip(frame, 1) for frame in rotated_frames]
+    for frame in flipped_frames_horizontal:
+        out.write(frame)
+    out.release()
+
+    print("-----Saved cost(.txt) and path(.png) and video(.mp4) -----")
+
 
 def checkDuplicatePointInPath(path):
     s = set()

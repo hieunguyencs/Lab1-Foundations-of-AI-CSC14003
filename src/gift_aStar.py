@@ -40,6 +40,8 @@ START_CHECKED_IMG = pygame.image.load(os.path.join('..','Assets', 'start_checked
 BUS_STOP_CHECK_IMG = pygame.image.load(os.path.join('..','Assets', 'bus_stop_checked.png'))
 DOOR_OPEN = pygame.image.load(os.path.join('..','Assets', 'door_checked.png'))
 
+frames = []
+
 # SCALE IMAGE
 def scale_img():
     global START_IMG, END_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, TELEPORT_IN_IMG, TELEPORT_OUT_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_VISITED_IMG, GIFT_CHECKED_IMG, START_CHECKED_IMG, GIFT_IMG, BUS_STOP_CHECK_IMG, DOOR_OPEN
@@ -65,6 +67,9 @@ def draw_cell_no_delay(x, y, IMG):
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
     WIN.blit(IMG, (drawX, drawY))
+    pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
+    bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
+    frames.append(bgr_frame)
 
 
 def draw_cell(x, y, IMG, start=None, gifts=None, stops=None, tele_in=None, tele_out=None, door=None):
@@ -92,6 +97,9 @@ def draw_cell(x, y, IMG, start=None, gifts=None, stops=None, tele_in=None, tele_
     WIN.blit(IMG, (drawX, drawY))
     pygame.display.update()
     pygame.time.delay(delay)
+    pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
+    bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
+    frames.append(bgr_frame)
 
 
 def draw_maze(maze_data, rows, cols):
@@ -272,7 +280,7 @@ def main(maze_path):
     draw_path(path, gifts=gifts_sort, start=save_start, door=end)
     dir_name = generate_output_path(maze_path, "AStar-Greedy_gift")
     cost_file = dir_name + "/AStar-Greedy_gift.txt"
-    writeToFile(file_name=cost_file, path=path, bonus=sumGifts, WIN=WIN)
+    writeToFile(file_name=cost_file, path=path, bonus=sumGifts, WIN=WIN,frames=frames)
 
     # --------------------------------
 

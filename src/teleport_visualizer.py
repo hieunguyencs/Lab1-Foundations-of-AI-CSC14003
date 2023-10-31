@@ -237,17 +237,17 @@ def main(maze_path):
             if (x,y)==(x1,y1):
                 count = count - 1
 
-    writeToFile(cost_file, path, count, WIN)
+    writeToFile(cost_file, path, count, WIN, frames)
 
 
-    height, width, layers = frames[0].shape
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Định dạng video codec
-    out = cv2.VideoWriter('output.mp4', fourcc, 30.0, (height, width))
-    rotated_frames = [cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) for frame in frames]
-    flipped_frames_horizontal = [cv2.flip(frame, 1) for frame in rotated_frames]
-    for frame in flipped_frames_horizontal:
-        out.write(frame)
-    out.release()
+    # height, width, layers = frames[0].shape
+    # fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Định dạng video codec
+    # out = cv2.VideoWriter('output.mp4', fourcc, 30.0, (height, width))
+    # rotated_frames = [cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) for frame in frames]
+    # flipped_frames_horizontal = [cv2.flip(frame, 1) for frame in rotated_frames]
+    # for frame in flipped_frames_horizontal:
+    #     out.write(frame)
+    # out.release()
     # --------------------------------
     pygame.quit()
 

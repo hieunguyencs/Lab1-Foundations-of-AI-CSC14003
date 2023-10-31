@@ -31,7 +31,7 @@ PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
 START_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start_checked.png'))
 DOOR_OPEN = pygame.image.load(os.path.join('..','Assets', 'door_checked.png'))
 
-
+frames = []
 # SCALE IMAGE
 def scale_img():
     global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, START_CHECK_IMG, DOOR_OPEN
@@ -49,6 +49,9 @@ def draw_cell_no_delay(x, y, IMG):
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
     WIN.blit(IMG, (drawX, drawY))
+    pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
+    bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
+    frames.append(bgr_frame)
 
 def draw_cell(x, y, IMG): 
     drawX = X_OFFSET + y * CELL_WIDTH
@@ -56,6 +59,9 @@ def draw_cell(x, y, IMG):
     WIN.blit(IMG, (drawX, drawY))
     pygame.display.update()
     pygame.time.delay(delay)
+    pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
+    bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
+    frames.append(bgr_frame)
 
 def draw_maze(maze_data, rows, cols):
     for row in range(rows):
@@ -207,7 +213,7 @@ def main(maze_path):
 
     dir_name = generate_output_path(maze_path, "UCS")
     cost_file = dir_name + "/UCS.txt"
-    writeToFile(cost_file, path, WIN=WIN)
+    writeToFile(cost_file, path, WIN=WIN, frames=frames)
 
     # --------------------------------
     pygame.quit()
