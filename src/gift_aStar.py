@@ -8,7 +8,7 @@ from WriteOutput import *
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("A*")
+pygame.display.set_caption("Gift: A* - Greedy")
 FPS = 60
 delay = 20
 long_delay = 1000
@@ -262,8 +262,9 @@ def main(maze_path):
         start = gift
     path += aStarForGiftProb(maze_data, rows, cols, begin=start, start=save_start, end=end, gifts=gift_datas)
     draw_path(path, gifts=gifts_sort, start=save_start, door=end)
-
-    writeToFile(file_name=generate_output_path(maze_path, "astar-greedy.txt"), path=path, bonus=sumGifts)
+    dir_name = generate_output_path(maze_path, "AStar-Greedy_gift")
+    cost_file = dir_name + "/AStar-Greedy_gift.txt"
+    writeToFile(file_name=cost_file, path=path, bonus=sumGifts)
 
 
     # --------------------------------

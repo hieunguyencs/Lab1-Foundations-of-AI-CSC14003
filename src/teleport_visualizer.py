@@ -8,7 +8,7 @@ from WriteOutput import *
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Teleport")
+pygame.display.set_caption("Teleporter: BFS")
 FPS = 60
 delay = 20
 long_delay = 1000
@@ -216,8 +216,8 @@ def main(maze_path):
     path = bfs(maze_data, teleport_data, rows, cols)
     draw_path(path, teleport_data)
 
-    dir_name = generate_output_path(maze_path, "teleport")
-    cost_file = dir_name + "/teleport.txt"
+    dir_name = generate_output_path(maze_path, "BFS_teleporter")
+    cost_file = dir_name + "/teleporter.txt"
 
     count = 0
     for x,y in path:
