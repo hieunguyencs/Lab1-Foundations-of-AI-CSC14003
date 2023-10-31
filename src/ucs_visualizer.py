@@ -207,7 +207,7 @@ def main(maze_path):
 
     dir_name = generate_output_path(maze_path, "UCS")
     cost_file = dir_name + "/UCS.txt"
-    writeToFile(cost_file, path)
+    writeToFile(cost_file, path, WIN=WIN)
 
     # --------------------------------
     pygame.quit()
