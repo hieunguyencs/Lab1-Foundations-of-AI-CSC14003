@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd src
 pip install -r requirements.txt
+cd src
 python main.py
