@@ -196,17 +196,19 @@ def GBFS(grid, num_row, num_col):
                     found = True
                     break
 
+    path = []
+    if (found): 
     # draw path
-    path = constructPath()
+        path = constructPath()
 
-    if len(path) > 0: 
-        pygame.time.delay(long_delay)
-        draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
-        end=path[-1]
-        path = path[1:-1]
-        for x, y in path: 
-            draw_cell(x, y, PATH_IMG)
-        draw_cell(end[0], end[1], DOOR_OPEN)
+        if len(path) > 0: 
+            pygame.time.delay(long_delay)
+            draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
+            end = path[-1]
+            path = path[1:-1]
+            for x, y in path: 
+                draw_cell(x, y, PATH_IMG)
+            draw_cell(end[0], end[1], DOOR_OPEN)
 
     return path
 
