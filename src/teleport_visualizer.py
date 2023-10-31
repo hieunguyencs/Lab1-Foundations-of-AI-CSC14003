@@ -197,6 +197,8 @@ def bfs(grid, teleport_data, rows, cols):
     return []
 
 def draw_path(path, teleport_data):
+    if len(path) == 0: 
+        return
     pygame.time.delay(1000)
     draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
     end=path[-1]
