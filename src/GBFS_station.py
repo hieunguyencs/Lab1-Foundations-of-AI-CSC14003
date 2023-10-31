@@ -272,7 +272,7 @@ def find_path(grid, gift_data, rows, cols):
         draw_maze(grid, rows, cols)
         for x, y in total_path: 
             if ([x, y] == end): 
-                draw_cell_no_delay(x, y, END_IMG)
+                draw_cell_no_delay(x, y, DOOR_OPEN)
             elif [x, y] == start: 
                 draw_cell_no_delay(x, y, START_CHECK_IMG)
             elif ([x, y] in lst): 
@@ -281,7 +281,7 @@ def find_path(grid, gift_data, rows, cols):
                 draw_cell_no_delay(x, y, PATH_IMG)
         for x, y in path: 
             if ([x, y] == end): 
-                draw_cell(x, y, END_IMG)
+                draw_cell(x, y, DOOR_OPEN)
             elif ([x, y] == start): 
                 draw_cell(x, y, START_CHECK_IMG)
             elif ((x, y) == path[-1]): 
@@ -291,10 +291,10 @@ def find_path(grid, gift_data, rows, cols):
             else:
                 draw_cell(x, y, PATH_IMG)
         total_path = total_path + path
-        draw_cell(total_path[-1][0], total_path[-1][1], DOOR_OPEN)
         cur = en
 
     total_path.insert(0, start)
+    draw_cell(total_path[-1][0], total_path[-1][1], DOOR_OPEN)
     return total_path
 
 # ---------------------------------
@@ -311,14 +311,6 @@ def main(maze_path):
     writeToFile(cost_file, path)
 
     # --------------------------------
-
-    clock = pygame.time.Clock()
-    run = True
-    while run:
-        clock.tick(FPS)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
     pygame.quit()
 
 if len(sys.argv) != 2:

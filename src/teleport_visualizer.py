@@ -216,14 +216,6 @@ def main(maze_path):
     draw_path(path, teleport_data)
 
     # --------------------------------
-
-    clock = pygame.time.Clock()
-    run = True
-    while run:
-        clock.tick(FPS)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
     pygame.quit()
 
 if len(sys.argv) != 2:
