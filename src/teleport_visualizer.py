@@ -59,9 +59,6 @@ def draw_cell_no_delay(x, y, IMG):
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
     WIN.blit(IMG, (drawX, drawY))
-    pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
-    bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
-    frames.append(bgr_frame)
     #frames.append(pygame_screenshot)
 
 def draw_cell(x, y, IMG):
@@ -89,6 +86,9 @@ def draw_maze(maze_data, rows, cols):
                 draw_cell_no_delay(row, col, TELEPORT_IN_IMG)
             elif cell == 'O':
                 draw_cell_no_delay(row, col, TELEPORT_OUT_IMG)
+    pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
+    bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
+    frames.append(bgr_frame)
 
 # LOAD MAZE GIVEN PATH
 def load_maze(maze_path):
