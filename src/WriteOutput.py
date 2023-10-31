@@ -39,7 +39,7 @@ def writeToFile(file_name="output.txt", path=None, bonus=0, WIN=None, frames=Non
         out.write(frame)
     out.release()
 
-    print("-----Saved cost(.txt), path(.jpg) and video(.mp4) -----")
+    print(f"-----Saved cost(.txt), path(.jpg) and video(.mp4) at {directory}-----")
 
 
 def checkDuplicatePointInPath(path):
