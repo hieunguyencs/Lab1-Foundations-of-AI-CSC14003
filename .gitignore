@@ -25,3 +25,5 @@ obj/
 # PyCharm
 .idea
 venv/
+
+output
