@@ -274,6 +274,8 @@ def find_path(grid, gift_data, rows, cols):
         st = cur
         path = GBFS(grid, rows, cols, st, en)
 
+        if len(path) < 2: 
+            return []
         path = path[1:]
 
         draw_maze(grid, rows, cols)
