@@ -25,8 +25,8 @@ def writeToFile(file_name="output.txt", path=None, bonus=0, WIN=None):
     if WIN is None:
         return
     image_path = file_name.split('.txt')[0] + '.png'
-    print("Saving image..")
     pygame.image.save(WIN, image_path)
+    print("-----Saved cost(.txt) and path(.png)-----")
 
 def checkDuplicatePointInPath(path):
     s = set()
