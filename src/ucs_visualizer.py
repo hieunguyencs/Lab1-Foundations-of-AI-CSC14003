@@ -2,6 +2,7 @@ import pygame
 import os
 import sys
 import heapq
+from WriteOutput import *
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
@@ -203,6 +204,10 @@ def main(maze_path):
     # Ex: DFS(maze_data, gift_data, rows, cols)
     path = ucs(maze_data, num_row, num_col)
     draw_path(path)
+
+    dir_name = generate_output_path(maze_path, "UCS")
+    cost_file = dir_name + "/UCS.txt"
+    writeToFile(cost_file, path)
 
     # --------------------------------
     pygame.quit()
