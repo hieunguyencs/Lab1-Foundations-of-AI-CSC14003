@@ -245,7 +245,7 @@ def main(maze_path):
     out = cv2.VideoWriter('output.mp4', fourcc, 30.0, (height, width))
     rotated_frames = [cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) for frame in frames]
 
-    for frame in frames:
+    for frame in rotated_frames:
         out.write(frame)
     out.release()
     # --------------------------------
