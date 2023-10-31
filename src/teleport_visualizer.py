@@ -242,7 +242,9 @@ def main(maze_path):
 
     height, width, layers = frames[0].shape
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Định dạng video codec
-    out = cv2.VideoWriter('output.mp4', fourcc, 30.0, (width, height))
+    out = cv2.VideoWriter('output.mp4', fourcc, 30.0, (height, width))
+    rotated_frames = [cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE) for frame in frames]
+
     for frame in frames:
         out.write(frame)
     out.release()
