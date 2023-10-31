@@ -8,7 +8,7 @@ from WriteOutput import *
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+WIN = pygame.display.set_mode((WIDTH, HEIGHT), flags=pygame.HIDDEN)
 pygame.display.set_caption("Teleporter: BFS")
 FPS = 60
 delay = 20

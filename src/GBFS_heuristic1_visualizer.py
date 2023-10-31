@@ -6,7 +6,7 @@ from WriteOutput import *
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+WIN = pygame.display.set_mode((WIDTH, HEIGHT), flags=pygame.HIDDEN)
 pygame.display.set_caption("GBFS - Manhattan distance heuristic")
 FPS = 60
 delay = 20
