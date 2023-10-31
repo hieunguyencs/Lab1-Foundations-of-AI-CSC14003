@@ -219,7 +219,7 @@ def main(maze_path):
 
     dir_name = generate_output_path(maze_path, "astar_heuristic_2")
     cost_file = dir_name + "/astar_heuristic_2.txt"
-    writeToFile(cost_file, path)
+    writeToFile(cost_file, path, WIN=WIN)
 
     # --------------------------------
 

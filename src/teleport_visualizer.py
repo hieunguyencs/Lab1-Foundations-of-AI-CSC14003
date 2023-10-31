@@ -226,7 +226,7 @@ def main(maze_path):
             if (x,y)==(x1,y1):
                 count = count - 1
 
-    writeToFile(cost_file, path, count)
+    writeToFile(cost_file, path, count, WIN)
 
     # --------------------------------
     pygame.quit()

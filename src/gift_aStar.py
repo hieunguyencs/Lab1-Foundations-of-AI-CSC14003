@@ -264,7 +264,7 @@ def main(maze_path):
     draw_path(path, gifts=gifts_sort, start=save_start, door=end)
     dir_name = generate_output_path(maze_path, "AStar-Greedy_gift")
     cost_file = dir_name + "/AStar-Greedy_gift.txt"
-    writeToFile(file_name=cost_file, path=path, bonus=sumGifts)
+    writeToFile(file_name=cost_file, path=path, bonus=sumGifts, WIN=WIN)
 
 
     # --------------------------------

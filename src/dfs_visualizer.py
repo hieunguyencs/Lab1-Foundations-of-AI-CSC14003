@@ -192,7 +192,7 @@ def main(maze_path):
 
     dir_name = generate_output_path(maze_path, "dfs")
     cost_file = dir_name + "/dfs.txt"
-    writeToFile(cost_file, path)
+    writeToFile(cost_file, path, WIN=WIN)
 
     # --------------------------------
 

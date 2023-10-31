@@ -188,7 +188,7 @@ def main(maze_path):
 
     dir_name = generate_output_path(maze_path, "bfs")
     cost_file = dir_name + "/bfs.txt"
-    writeToFile(cost_file, path)
+    writeToFile(cost_file, path, WIN=WIN)
 
     # --------------------------------
     pygame.quit()
