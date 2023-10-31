@@ -1,6 +1,8 @@
 import os
+import pygame
 
-def writeToFile(file_name="output.txt", path=None, bonus=0):
+
+def writeToFile(file_name="output.txt", path=None, bonus=0, WIN=None):
     if path is None:
         return
 
@@ -14,12 +16,17 @@ def writeToFile(file_name="output.txt", path=None, bonus=0):
         leng = len(path)
         if leng == 0:
             out.write("NO")
-            return
-        out.write(str(leng - 1 + bonus))
+        else:
+            out.write(str(leng - 1 + bonus))
         # Write path if needed
         # out.write('\n')
         # for point in path:
         #     out.write('({}, {}) '.format(point[0], point[1]))
+    if WIN is None:
+        return
+    image_path = file_name.split('.txt')[0] + '.png'
+    print("Saving image..")
+    pygame.image.save(WIN, image_path)
 
 def checkDuplicatePointInPath(path):
     s = set()
