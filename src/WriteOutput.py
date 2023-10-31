@@ -26,7 +26,7 @@ def writeToFile(file_name="output.txt", path=None, bonus=0, WIN=None, frames=Non
         #     out.write('({}, {}) '.format(point[0], point[1]))
     if WIN is None:
         return
-    image_path = file_name.split('.txt')[0] + '.png'
+    image_path = file_name.split('.txt')[0] + '.jpg'
     pygame.image.save(WIN, image_path)
 
     video_path = file_name.split('.txt')[0] + '.mp4'
@@ -39,7 +39,7 @@ def writeToFile(file_name="output.txt", path=None, bonus=0, WIN=None, frames=Non
         out.write(frame)
     out.release()
 
-    print("-----Saved cost(.txt) and path(.png) and video(.mp4) -----")
+    print("-----Saved cost(.txt), path(.jpg) and video(.mp4) -----")
 
 
 def checkDuplicatePointInPath(path):
