@@ -3,6 +3,7 @@ from collections import deque
 import pygame
 import os
 import sys
+from WriteOutput import *
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
@@ -214,6 +215,18 @@ def main(maze_path):
     # draw_path(maze_path, teleport_data, rows, cols)
     path = bfs(maze_data, teleport_data, rows, cols)
     draw_path(path, teleport_data)
+
+    dir_name = generate_output_path(maze_path, "teleport")
+    cost_file = dir_name + "/teleport.txt"
+
+    count = 0
+    for x,y in path:
+        for teleport in teleport_data:
+            x1,y1,x2,y2 = teleport
+            if (x,y)==(x1,y1):
+                count = count - 1
+
+    writeToFile(cost_file, path, count)
 
     # --------------------------------
     pygame.quit()
