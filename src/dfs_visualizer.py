@@ -157,15 +157,17 @@ def DFS(a, rows, cols):
 
     recurse(start[0], start[1])
 
-    # Trace path
-    X, Y = end
+
     path = []
-    while True: 
-        if [X, Y] == [-1, -1]: 
-            break    
-        path.append([X, Y])
-        X, Y = trace[X][Y]
-    path.reverse()
+    if (found):
+        # Trace path
+        X, Y = end
+        while True: 
+            if [X, Y] == [-1, -1]: 
+                break    
+            path.append([X, Y])
+            X, Y = trace[X][Y]
+        path.reverse()
 
     return path
 
