@@ -94,9 +94,13 @@ def draw_path(path, start=None, gifts=None, door=None):
         if [x, y] == door:
             draw_cell(x, y, visualizer.DOOR_OPEN)
             continue
-        if [x, y] in gifts:
-            draw_cell(x, y, visualizer.GIFT_CHECKED_IMG)
-        else:
+        flag = False
+        for gift in gifts:
+            if x == gift[0] and y == gift[1]:
+                draw_cell(x, y, visualizer.GIFT_CHECKED_IMG)
+                flag = True
+                break
+        if not flag:
             draw_cell(x, y, visualizer.PATH_IMG)
 
 # ---------------------------------
