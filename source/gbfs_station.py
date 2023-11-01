@@ -1,129 +1,17 @@
-import pygame
-import os
 import sys
 from collections import deque
 import heapq
 from WriteOutput import *
+import visualizer
+from visualizer import frames,draw_cell, load_maze, dx, dy, WIN, LONGDELAY
 
-# GAME SETUP
-WIDTH, HEIGHT = 1200, 700
-WIN = pygame.display.set_mode((WIDTH, HEIGHT), flags=pygame.HIDDEN)
 pygame.display.set_caption("Stations: GBFS")
-FPS = 60
-delay = 20
-long_delay = 1000
 
-# DEFINE COLOR
-WHITE = (255, 255, 255)
-
-# CONSTANTS
-CELL_WIDTH, CELL_HEIGHT = 50, 50
-dx = [1, -1, 0, 0]
-dy = [0, 0, 1, -1]
-ROW, COL = 0, 0
-X_OFFSET, Y_OFFSET = 0, 0
-
-# INCLUDE IMAGE
-START_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start.jpg'))
-END_IMG = pygame.image.load(os.path.join('..', 'Assets', 'door.jpg'))
-GIFT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'bus_stop.jpg'))
-WALL_IMG = pygame.image.load(os.path.join('..', 'Assets', 'wall.jpg'))
-VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
-PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
-BUS_STOP_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'bus_stop_checked.png'))
-START_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start_checked.png'))
-DOOR_OPEN = pygame.image.load(os.path.join('..','Assets', 'door_checked.png'))
-
-frames = []
-# SCALE IMAGE
-def scale_img():
-    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, BUS_STOP_CHECK_IMG, START_CHECK_IMG, DOOR_OPEN
-    START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    WALL_IMG = pygame.transform.scale(WALL_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    VISITED_IMG = pygame.transform.scale(VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    BUS_STOP_CHECK_IMG = pygame.transform.scale(BUS_STOP_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    START_CHECK_IMG = pygame.transform.scale(START_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
-    DOOR_OPEN = pygame.transform.scale(DOOR_OPEN, (CELL_WIDTH, CELL_HEIGHT))
-
-# DRAW METHOD
-def draw_cell_no_delay(x, y, IMG): 
-    drawX = X_OFFSET + y * CELL_WIDTH
-    drawY = Y_OFFSET + x * CELL_HEIGHT
-    WIN.blit(IMG, (drawX, drawY))
-
-def draw_cell(x, y, IMG): 
-    drawX = X_OFFSET + y * CELL_WIDTH
-    drawY = Y_OFFSET + x * CELL_HEIGHT
-    WIN.blit(IMG, (drawX, drawY))
-    pygame.display.update()
-    pygame.time.delay(delay)
-    pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
-    bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
-    frames.append(bgr_frame)
-
-def draw_maze(maze_data, rows, cols):
-    WIN.fill(WHITE)
-    for row in range(rows):
-        for col in range(cols):
-            cell = maze_data[row][col]
-            if cell == 'x':
-                draw_cell_no_delay(row, col, WALL_IMG)
-            elif cell == 'S':
-                draw_cell_no_delay(row, col, START_IMG)
-            elif row == 0 or row == rows - 1 or col == 0 or col == cols - 1:
-                draw_cell_no_delay(row, col, END_IMG)
-            elif cell == '+': 
-                draw_cell_no_delay(row, col, GIFT_IMG)
-    pygame.display.update()
-    pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
-    bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
-    frames.append(bgr_frame)
-
-# LOAD MAZE GIVEN PATH
-def load_maze(maze_path):
-    # Set caption
-    map_number = int(maze_path.split('/')[-1].replace('input', '').split('.')[0])
-    cur_caption = pygame.display.get_caption()[0]
-    new_caption = f"{cur_caption} - Map {map_number}"
-    pygame.display.set_caption(new_caption)
-
-    # Read maze
-    maze_data = []
-    gift_data = []
-    with open(maze_path, 'r') as file:
-        lines = file.read().splitlines()
-
-        n = list(map(int, lines[0].split()))[0]
-        for i in range(1, n + 1): 
-            gift_data.append(list(map(int, lines[i].split())))
-
-        for line in lines[n + 1:]:
-            maze_data.append(list(line))
-
-        rows = len(lines) - n - 1
-        cols = len(lines[n + 1])
-
-    # Set up sizes and position
-    global CELL_WIDTH, CELL_HEIGHT
-    if WIDTH / cols < HEIGHT / rows: 
-        CELL_WIDTH = CELL_HEIGHT = (WIDTH) / (cols + 2)
-    else: 
-        CELL_WIDTH = CELL_HEIGHT = (HEIGHT) / (rows + 2)
-
-    global X_OFFSET, Y_OFFSET   
-    X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
-    Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
-
-    scale_img()
-
-    # Draw maze
-    draw_maze(maze_data, rows, cols)
-    pygame.time.delay(long_delay)
-
-    return maze_data, gift_data, rows, cols
+# because STATION and GIFT use a same symbol '+' in .txt
+# so, I use this code to change STATION icon in pygame map
+STATION_IMG = pygame.image.load(os.path.join('..', 'Assets', 'bus_stop.jpg'))
+GIFT_IMG = STATION_IMG
+GIFT_IMG = pygame.transform.scale(GIFT_IMG, (visualizer.CELL_WIDTH, visualizer.CELL_HEIGHT))
 
 # --- WRITE GRAPH FUNCTION HERE ---
 # You can call function draw_cell(x, y, IMG) to draw IMG at cell (x, y)
@@ -217,7 +105,7 @@ def GBFS(grid, num_row, num_col, start, end):
         #     break
 
         if (picked_cell != start): 
-            draw_cell(picked_cell[0], picked_cell[1], VISITED_IMG)
+            draw_cell(picked_cell[0], picked_cell[1], visualizer.VISITED_IMG)
 
         for i in range(4): 
             next_x = picked_cell[0] + dx[i]
@@ -245,7 +133,7 @@ def find_path(grid, gift_data, rows, cols):
     # draw maze again
     # pygame.time.delay(long_delay)
     # draw_maze(grid, rows, cols)
-    # pygame.time.delay(long_delay)
+    pygame.time.delay(LONGDELAY)
 
     # save list of pick up cells and also start, end
     pick_up_list = []
@@ -263,7 +151,7 @@ def find_path(grid, gift_data, rows, cols):
     for x, y in pick_up_list:
         lst.append(y)
 
-    draw_cell(start[0], start[1], START_CHECK_IMG)
+    draw_cell(start[0], start[1], visualizer.START_CHECK_IMG)
     global total_path
     cur = pick_up_list[0][1]
     for i in range(1, len(pick_up_list)): 
@@ -278,32 +166,32 @@ def find_path(grid, gift_data, rows, cols):
             return []
         path = path[1:]
 
-        draw_maze(grid, rows, cols)
+        visualizer.draw_maze(grid, rows, cols)
         for x, y in total_path: 
             if ([x, y] == end): 
-                draw_cell_no_delay(x, y, DOOR_OPEN)
+                visualizer.draw_cell_no_delay(x, y, visualizer.DOOR_OPEN)
             elif [x, y] == start: 
-                draw_cell_no_delay(x, y, START_CHECK_IMG)
+                visualizer.draw_cell_no_delay(x, y, visualizer.START_CHECK_IMG)
             elif ([x, y] in lst): 
-                draw_cell_no_delay(x, y, BUS_STOP_CHECK_IMG)
+                visualizer.draw_cell_no_delay(x, y, visualizer.STATION_CHECK_IMG)
             else:
-                draw_cell_no_delay(x, y, PATH_IMG)
+                visualizer.draw_cell_no_delay(x, y, visualizer.PATH_IMG)
         for x, y in path: 
             if ([x, y] == end): 
-                draw_cell(x, y, DOOR_OPEN)
+                draw_cell(x, y, visualizer.DOOR_OPEN)
             elif ([x, y] == start): 
-                draw_cell(x, y, START_CHECK_IMG)
+                draw_cell(x, y, visualizer.START_CHECK_IMG)
             elif ((x, y) == path[-1]): 
-                draw_cell(x, y, BUS_STOP_CHECK_IMG)
+                draw_cell(x, y, visualizer.STATION_CHECK_IMG)
             elif ([x, y] in lst): 
-                draw_cell(x, y, BUS_STOP_CHECK_IMG)
+                draw_cell(x, y, visualizer.STATION_CHECK_IMG)
             else:
-                draw_cell(x, y, PATH_IMG)
+                draw_cell(x, y, visualizer.PATH_IMG)
         total_path = total_path + path
         cur = en
 
     total_path.insert(0, start)
-    draw_cell(total_path[-1][0], total_path[-1][1], DOOR_OPEN)
+    draw_cell(total_path[-1][0], total_path[-1][1], visualizer.DOOR_OPEN)
     return total_path
 
 # ---------------------------------
@@ -323,7 +211,7 @@ def main(maze_path):
     pygame.quit()
 
 if len(sys.argv) != 2:
-    print("Usage: python bfs_visualizer.py <path>")
+    print("Usage: python gbfs_station.py <path>")
 else:
     maze_path = sys.argv[1]
     main(maze_path)

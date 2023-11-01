@@ -1,40 +1,47 @@
-import pygame
 import os
-import sys
-from WriteOutput import *
+import cv2
+import pygame
 
 # GAME SETUP
 WIDTH, HEIGHT = 1200, 700
-WIN = pygame.display.set_mode((WIDTH, HEIGHT), flags=pygame.HIDDEN)
-pygame.display.set_caption("DFS")
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+# WIN = pygame.display.set_mode((WIDTH, HEIGHT), flags=pygame.HIDDEN)
 FPS = 60
-delay = 20
-long_delay = 1000
+DELAY = 20
+LONGDELAY = 1000
 
 # DEFINE COLOR
 WHITE = (255, 255, 255)
 
 # CONSTANTS
 CELL_WIDTH, CELL_HEIGHT = 50, 50
-dx = [-1, 0, 0, 1]
-dy = [0, 1, -1, 0]
+dx = [1, -1, 0, 0]
+dy = [0, 0, 1, -1]
 ROW, COL = 0, 0
 X_OFFSET, Y_OFFSET = 0, 0
 
 # INCLUDE IMAGE
 START_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start.jpg'))
 END_IMG = pygame.image.load(os.path.join('..', 'Assets', 'door.jpg'))
-GIFT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'gift.jpg'))
 WALL_IMG = pygame.image.load(os.path.join('..', 'Assets', 'wall.jpg'))
 VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'visited.jpg'))
 PATH_IMG = pygame.image.load(os.path.join('..', 'Assets', 'path.jpg'))
 START_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'start_checked.png'))
-DOOR_OPEN = pygame.image.load(os.path.join('..','Assets', 'door_checked.png'))
+DOOR_OPEN = pygame.image.load(os.path.join('..', 'Assets', 'door_checked.png'))
+TELEPORT_IN_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_in.png'))
+TELEPORT_OUT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_out.png'))
+TELEPORT_IN_VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_in_visited.png'))
+TELEPORT_OUT_VISITED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'teleport_out_visited.png'))
+STATION_CHECK_IMG = pygame.image.load(os.path.join('..', 'Assets', 'bus_stop_checked.png'))
+GIFT_IMG = pygame.image.load(os.path.join('..', 'Assets', 'gift.jpg'))
+GIFT_CHECKED_IMG = pygame.image.load(os.path.join('..', 'Assets', 'gift_checked.png'))
 
-frames = []
-# SCALE IMAGE
-def scale_img():
-    global START_IMG, END_IMG, GIFT_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, START_CHECK_IMG, DOOR_OPEN
+
+def scale_img(CELL_WIDTH, CELL_HEIGHT):
+    # Scale all icons to fit with the pygame's map
+
+    global START_IMG, END_IMG, GIFT_IMG, GIFT_CHECKED_IMG, WALL_IMG, VISITED_IMG, PATH_IMG, START_CHECK_IMG, DOOR_OPEN
+    global TELEPORT_IN_IMG, TELEPORT_IN_VISITED_IMG, TELEPORT_OUT_IMG, TELEPORT_OUT_VISITED_IMG, STATION_CHECK_IMG
     START_IMG = pygame.transform.scale(START_IMG, (CELL_WIDTH, CELL_HEIGHT))
     END_IMG = pygame.transform.scale(END_IMG, (CELL_WIDTH, CELL_HEIGHT))
     GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
@@ -43,22 +50,34 @@ def scale_img():
     PATH_IMG = pygame.transform.scale(PATH_IMG, (CELL_WIDTH, CELL_HEIGHT))
     START_CHECK_IMG = pygame.transform.scale(START_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
     DOOR_OPEN = pygame.transform.scale(DOOR_OPEN, (CELL_WIDTH, CELL_HEIGHT))
+    TELEPORT_IN_IMG = pygame.transform.scale(TELEPORT_IN_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    TELEPORT_IN_VISITED_IMG = pygame.transform.scale(TELEPORT_IN_VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    TELEPORT_OUT_IMG = pygame.transform.scale(TELEPORT_OUT_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    TELEPORT_OUT_VISITED_IMG = pygame.transform.scale(TELEPORT_OUT_VISITED_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    STATION_CHECK_IMG = pygame.transform.scale(STATION_CHECK_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    GIFT_IMG = pygame.transform.scale(GIFT_IMG, (CELL_WIDTH, CELL_HEIGHT))
+    GIFT_CHECKED_IMG = pygame.transform.scale(GIFT_CHECKED_IMG, (CELL_WIDTH, CELL_HEIGHT))
+
+frames = []
+
 
 # DRAW METHOD
-def draw_cell_no_delay(x, y, IMG): 
+def draw_cell_no_delay(x, y, IMG):
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
     WIN.blit(IMG, (drawX, drawY))
 
-def draw_cell(x, y, IMG): 
+
+def draw_cell(x, y, IMG):
     drawX = X_OFFSET + y * CELL_WIDTH
     drawY = Y_OFFSET + x * CELL_HEIGHT
     WIN.blit(IMG, (drawX, drawY))
     pygame.display.update()
-    pygame.time.delay(delay)
+    pygame.time.delay(DELAY)
     pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
     bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
     frames.append(bgr_frame)
+
 
 def draw_maze(maze_data, rows, cols):
     for row in range(rows):
@@ -70,11 +89,12 @@ def draw_maze(maze_data, rows, cols):
                 draw_cell_no_delay(row, col, START_IMG)
             elif row == 0 or row == rows - 1 or col == 0 or col == cols - 1:
                 draw_cell_no_delay(row, col, END_IMG)
-            elif cell == '+': 
+            elif cell == '+':
                 draw_cell_no_delay(row, col, GIFT_IMG)
     pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
     bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
-    frames.append(bgr_frame)                
+    frames.append(bgr_frame)
+
 
 # LOAD MAZE GIVEN PATH
 def load_maze(maze_path):
@@ -91,7 +111,7 @@ def load_maze(maze_path):
         lines = file.read().splitlines()
 
         n = list(map(int, lines[0].split()))[0]
-        for i in range(1, n + 1): 
+        for i in range(1, n + 1):
             gift_data.append(list(map(int, lines[i].split())))
 
         for line in lines[n + 1:]:
@@ -102,112 +122,21 @@ def load_maze(maze_path):
 
     # Set up sizes and position
     global CELL_WIDTH, CELL_HEIGHT
-    if WIDTH / cols < HEIGHT / rows: 
-        CELL_WIDTH = CELL_HEIGHT = (WIDTH) / (cols + 2)
-    else: 
-        CELL_WIDTH = CELL_HEIGHT = (HEIGHT) / (rows + 2)
+    if WIDTH / cols < HEIGHT / rows:
+        CELL_WIDTH = CELL_HEIGHT = WIDTH / (cols + 2)
+    else:
+        CELL_WIDTH = CELL_HEIGHT = HEIGHT / (rows + 2)
 
-    scale_img()
-
-    global X_OFFSET, Y_OFFSET   
+    global X_OFFSET, Y_OFFSET
     X_OFFSET = (WIDTH - cols * CELL_WIDTH) // 2
     Y_OFFSET = (HEIGHT - rows * CELL_HEIGHT) // 2
+
+    scale_img(CELL_WIDTH, CELL_HEIGHT)
 
     # Draw maze
     WIN.fill(WHITE)
     draw_maze(maze_data, rows, cols)
     pygame.display.update()
-    pygame.time.delay(1000)
+    pygame.time.delay(LONGDELAY)
 
     return maze_data, gift_data, rows, cols
-
-# --- WRITE GRAPH FUNCTION HERE ---
-# You can call function draw_cell(x, y, IMG) to draw IMG at cell (x, y)
-
-def DFS(a, rows, cols):
-    vis = [[False for j in range(cols)] for i in range(rows)]
-    trace = [[[-1, -1] for j in range(cols)] for i in range(rows)]
-
-    for i in range(rows):
-        for j in range(cols):
-            if a[i][j] == 'S':
-                start = [i, j]
-            if a[i][j] != 'x' and (i == 0 or i == rows - 1 or j == 0 or j == cols - 1):
-                end = [i, j]
-
-    found = False
-
-    def inGrid(x, y): 
-        return x >= 0 and x < rows and y >= 0 and y < cols
-
-    def recurse(x, y):
-        nonlocal found
-        if found:
-            return  
-        vis[x][y] = True
-        for i in range(4):
-            new_x = x + dx[i]
-            new_y = y + dy[i]
-
-            if (found): 
-                return
-
-            if inGrid(new_x, new_y) and not vis[new_x][new_y] and a[new_x][new_y] != 'x':
-                trace[new_x][new_y] = [x, y]
-                if [new_x, new_y] == end:
-                    found = True
-                    return  
-
-                draw_cell(new_x, new_y, VISITED_IMG)
-                recurse(new_x, new_y)
-
-    recurse(start[0], start[1])
-
-
-    path = []
-    if (found):
-        # Trace path
-        X, Y = end
-        while True: 
-            if [X, Y] == [-1, -1]: 
-                break    
-            path.append([X, Y])
-            X, Y = trace[X][Y]
-        path.reverse()
-
-    return path
-
-def draw_path(path): 
-    if len(path) == 0: 
-        return
-    pygame.time.delay(long_delay)
-    draw_cell(path[0][0], path[0][1], START_CHECK_IMG)
-    end = path[-1]
-    path = path[1:-1]
-    for u, v in path: 
-        draw_cell(u, v, PATH_IMG)
-    draw_cell(end[0], end[1], DOOR_OPEN)
-
-# ---------------------------------
-
-def main(maze_path):
-    maze_data, gift_data, rows, cols = load_maze(maze_path)
-
-    # --- CALL GRAPH FUNCTION HERE ---
-    # Ex: DFS(maze_data, gift_data, rows, cols)
-    path = DFS(maze_data, rows, cols)
-    draw_path(path)
-
-    dir_name = generate_output_path(maze_path, "dfs")
-    cost_file = dir_name + "/dfs.txt"
-    writeToFile(cost_file, path, WIN=WIN, frames=frames)
-
-    # --------------------------------
-
-    pygame.quit()
-
-if len(sys.argv) != 2:
-    print("Usage: python dfs_visualizer.py <path>")
-else:
-    maze_path = sys.argv[1]
-    main(maze_path)
