@@ -28,7 +28,7 @@ def solve(prob_path):
             elif "level_3" in prob_path:
                 os.system(f"python gbfs_station.py {file_path}")
             elif "advance" in prob_path:
-                os.system(f"python teleport_visualizer.py {file_path}")
+                os.system(f"python bfs_teleportation.py {file_path}")
 
 
 if __name__ == "__main__":

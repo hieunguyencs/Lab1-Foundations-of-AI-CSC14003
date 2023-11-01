@@ -91,6 +91,10 @@ def draw_maze(maze_data, rows, cols):
                 draw_cell_no_delay(row, col, END_IMG)
             elif cell == '+':
                 draw_cell_no_delay(row, col, GIFT_IMG)
+            elif cell == 'o':
+                draw_cell_no_delay(row, col, TELEPORT_IN_IMG)
+            elif cell == 'O':
+                draw_cell_no_delay(row, col, TELEPORT_OUT_IMG)
     pygame_screenshot = pygame.surfarray.array3d(pygame.display.get_surface())
     bgr_frame = cv2.cvtColor(pygame_screenshot, cv2.COLOR_RGB2BGR)
     frames.append(bgr_frame)
