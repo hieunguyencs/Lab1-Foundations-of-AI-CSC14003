@@ -1,4 +1,4 @@
 #!/bin/bash
 pip install -r requirements.txt
-cd src
+cd source
 python main.py
